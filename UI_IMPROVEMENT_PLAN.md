@@ -15,7 +15,7 @@ Upgrade the dashboard from raw prototype quality to a production-grade SOC inter
 ### Phase 0 - Baseline and Standards
 - [x] Define redesign direction and implementation roadmap.
 - [x] Identify critical visual debt and accuracy gaps in current UI.
-- [ ] Capture before/after screenshots for each major panel.
+- [x] Capture before/after screenshots for each major panel.
 
 ### Phase 1 - Style Foundation (Design Tokens + Utility Reliability)
 - [x] Ensure all class names used by components are backed by real CSS rules.
@@ -56,9 +56,9 @@ Upgrade the dashboard from raw prototype quality to a production-grade SOC inter
 - 2026-02-17 WCAG contrast audit for key theme text/background pairs: dark text `16.00:1`, dark secondary `7.01:1`, light text `16.12:1`, light secondary `7.58:1`, light red state `4.62:1`, light warning `6.78:1`, midnight text `12.26:1`, hacker text `14.22:1`.
 
 ## Current Sprint Focus
-1. Phase 0 before/after screenshot capture for final documentation.
-2. Phase 1 spacing/radius/elevation normalization completion.
-3. Phase 1 semantic token cleanup to reduce theme-specific overrides.
+1. Phase 1 spacing/radius/elevation normalization completion.
+2. Phase 1 semantic token cleanup to reduce theme-specific overrides.
+3. Phase 1 typography hierarchy tightening for headings, metrics, and logs.
 
 ## Change Log
 - 2026-02-17: Initialized tracking document and started implementation sprint for Phase 1 + Phase 3 + Phase 5.
@@ -77,3 +77,6 @@ Upgrade the dashboard from raw prototype quality to a production-grade SOC inter
 - 2026-02-17: Added lazy-loading boundaries for `TrafficChartV2`, `AttackMap`, and `LogTable` with panel fallbacks to improve initial loading behavior.
 - 2026-02-17: Added Vite manual chunking for `recharts`, `framer-motion`, and `lucide-react`; build output is now split into smaller vendor chunks with no >500kB warning.
 - 2026-02-17: Completed served-build render-path smoke checks and theme contrast ratio validation; Phase 6 moved to complete.
+- 2026-02-17: Added repeatable screenshot capture pipeline (`vite.config.legacy.js`, `src/mainLegacy.jsx`, `scripts/capture-ui-screenshots.mjs`) and captured baseline vs redesigned panel artifacts under `docs/ui-screenshots`.
+- 2026-02-17: Closed Phase 0 screenshot task with generated full-dashboard and panel-level before/after captures (traffic, control, logs, plus new attack map in redesigned UI).
+- 2026-02-17: Updated ESLint ignore configuration to include `dist-legacy` so legacy screenshot baseline builds do not introduce lint noise.
