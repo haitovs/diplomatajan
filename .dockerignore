@@ -1,0 +1,9 @@
+node_modules
+.git
+.DS_Store
+electron
+release
+dist
+*.md
+run.bat
+run.sh

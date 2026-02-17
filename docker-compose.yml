@@ -1,0 +1,7 @@
+services:
+  frontend:
+    build: .
+    container_name: atajan-brute-force
+    ports:
+      - "4050:80"
+    restart: unless-stopped
