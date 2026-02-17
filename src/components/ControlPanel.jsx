@@ -4,7 +4,7 @@ export const ControlPanel = ({ config, onToggleAttack, onSetIntensity, onToggleF
   return (
     <div className="glass-panel p-6">
       <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-white">
-        <Zap className="text-warning-color" size={24} />
+        <Zap className="text-warning" size={24} />
         Control Center
       </h2>
       
@@ -20,26 +20,30 @@ export const ControlPanel = ({ config, onToggleAttack, onSetIntensity, onToggleF
               </div>
             </div>
             <input 
+              id="legacy-attack-toggle"
               type="checkbox" 
               checked={config.isUnderAttack} 
               onChange={(e) => onToggleAttack(e.target.checked)}
               className="toggle"
+              aria-label="Toggle attack simulation"
             />
           </div>
           
           <div className={`transition-all duration-300 ${config.isUnderAttack ? 'opacity-100 max-h-20' : 'opacity-50 max-h-0 overflow-hidden'}`}>
             <div className="pl-4 border-l-2 border-red-500/30 ml-2">
               <div className="flex justify-between mb-2">
-                <label className="text-sm text-gray-400">Attack Intensity</label>
+                <label htmlFor="legacy-attack-intensity" className="text-sm text-gray-400">Attack Intensity</label>
                 <span className="text-sm text-danger font-bold">{config.attackIntensity}x</span>
               </div>
               <input 
+                id="legacy-attack-intensity"
                 type="range" 
                 min="1" 
                 max="20" 
                 value={config.attackIntensity} 
                 onChange={(e) => onSetIntensity(parseInt(e.target.value))}
                 className="w-full"
+                aria-label="Attack intensity"
               />
             </div>
           </div>
@@ -58,10 +62,12 @@ export const ControlPanel = ({ config, onToggleAttack, onSetIntensity, onToggleF
               </div>
             </div>
             <input 
+              id="legacy-waf-toggle"
               type="checkbox" 
               checked={config.firewallEnabled} 
               onChange={(e) => onToggleFirewall(e.target.checked)}
               className="toggle"
+              aria-label="Toggle active defense"
             />
           </div>
         </div>

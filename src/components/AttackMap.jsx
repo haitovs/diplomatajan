@@ -1,185 +1,407 @@
-import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 
-/**
- * Attack Map Visualization
- * Shows attack origins on a simplified world map with animated attack vectors
- */
+const VIEWBOX = { width: 960, height: 480 };
 
-// Simplified world map SVG path
-const WORLD_MAP_PATH = "M 10,50 Q 25,10 50,30 T 90,45 Q 85,60 95,75 Q 75,85 60,70 Q 40,85 30,70 Q 15,80 10,50 Z M 5,30 Q 15,20 25,35 T 8,40 Q 5,35 5,30 Z";
-
-// City coordinates on the map (x, y as percentages)
-const LOCATIONS = {
-  'RU': { x: 70, y: 25, name: 'Russia' },
-  'CN': { x: 82, y: 38, name: 'China' },
-  'BR': { x: 30, y: 65, name: 'Brazil' },
-  'IN': { x: 72, y: 45, name: 'India' },
-  'NG': { x: 48, y: 52, name: 'Nigeria' },
-  'US': { x: 22, y: 35, name: 'USA' },
-  'IR': { x: 62, y: 40, name: 'Iran' },
-  'PK': { x: 68, y: 42, name: 'Pakistan' },
-  'EU': { x: 50, y: 28, name: 'Europe' },
-  'SERVER': { x: 50, y: 50, name: 'Target Server' },
+const COUNTRY_FALLBACKS = {
+  RU: { name: 'Russia', lat: 55.75, lon: 37.62 },
+  CN: { name: 'China', lat: 39.9, lon: 116.4 },
+  BR: { name: 'Brazil', lat: -23.55, lon: -46.63 },
+  IN: { name: 'India', lat: 28.61, lon: 77.23 },
+  NG: { name: 'Nigeria', lat: 6.45, lon: 3.39 },
+  US: { name: 'United States', lat: 40.71, lon: -74.01 },
+  IR: { name: 'Iran', lat: 35.69, lon: 51.39 },
+  PK: { name: 'Pakistan', lat: 24.86, lon: 67.01 },
 };
 
-export const AttackMap = ({ attacks = [], serverLocation = 'SERVER', isUnderAttack = false }) => {
-  const [activeAttacks, setActiveAttacks] = useState([]);
-  
-  useEffect(() => {
-    // Aggregate attacks by origin
-    const originCounts = {};
-    attacks.forEach(attack => {
-      const country = attack.origin?.country || 'US';
-      originCounts[country] = (originCounts[country] || 0) + 1;
+const SERVER_LOCATIONS = {
+  US_EAST: { name: 'US East Datacenter', lat: 39.1, lon: -77.3 },
+  EU_CENTRAL: { name: 'EU Central Datacenter', lat: 50.11, lon: 8.68 },
+};
+
+const LANDMASSES = [
+  [
+    [-165, 12], [-150, 72], [-60, 72], [-50, 14], [-95, 8],
+  ],
+  [
+    [-82, 12], [-36, 12], [-50, -56], [-72, -55],
+  ],
+  [
+    [-11, 35], [20, 71], [178, 72], [170, 10], [110, 1], [60, 7], [35, 32], [-10, 30],
+  ],
+  [
+    [-20, 35], [52, 35], [50, -35], [13, -37], [-17, -2],
+  ],
+  [
+    [112, -10], [155, -10], [156, -44], [112, -43],
+  ],
+  [
+    [-74, 58], [-20, 58], [-12, 83], [-60, 84],
+  ],
+];
+
+const project = (lat, lon) => ({
+  x: ((lon + 180) / 360) * VIEWBOX.width,
+  y: ((90 - lat) / 180) * VIEWBOX.height,
+});
+
+const buildArcPath = (source, target) => {
+  const midX = (source.x + target.x) / 2;
+  const midY = (source.y + target.y) / 2;
+  const distance = Math.hypot(target.x - source.x, target.y - source.y);
+  const curveHeight = Math.min(130, 30 + distance * 0.2);
+  return `M ${source.x} ${source.y} Q ${midX} ${midY - curveHeight} ${target.x} ${target.y}`;
+};
+
+const getOriginColor = (ratio) => {
+  if (ratio > 0.75) return '#fb7185';
+  if (ratio > 0.5) return '#f97316';
+  return '#fbbf24';
+};
+
+const formatAttackTypeLabel = (typeId = '') =>
+  typeId
+    .split('_')
+    .filter(Boolean)
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join(' ');
+
+const isBlockedStatus = (status) => [403, 423, 428, 429].includes(status);
+
+const matchesResultFilter = (status, filter) => {
+  if (filter === 'all') return true;
+  if (filter === 'blocked') return isBlockedStatus(status);
+  if (filter === 'failed') return status === 401;
+  if (filter === 'success') return status === 200;
+  return true;
+};
+
+const getResultCount = (bucket, filter) => {
+  if (!bucket) return 0;
+  if (filter === 'all') return bucket.total || 0;
+  return bucket.outcomes?.[filter] || 0;
+};
+
+export const AttackMap = ({
+  telemetry = null,
+  attacks = [],
+  serverLocation = 'US_EAST',
+  isUnderAttack = false,
+  windowMs = 90_000,
+  activeAttackTypeId = null,
+}) => {
+  const [hoveredOrigin, setHoveredOrigin] = useState(null);
+  const [typeFilter, setTypeFilter] = useState('all');
+  const [resultFilter, setResultFilter] = useState('all');
+
+  const availableAttackTypes = useMemo(() => {
+    if (telemetry?.availableAttackTypes?.length) {
+      return telemetry.availableAttackTypes;
+    }
+
+    const uniqueTypes = new Set();
+    attacks.forEach((attack) => {
+      if (attack.attackType) uniqueTypes.add(attack.attackType);
     });
-    
-    // Convert to array
-    const attackList = Object.entries(originCounts).map(([country, count]) => ({
-      country,
-      count,
-      ...LOCATIONS[country] || LOCATIONS.US,
-    }));
-    
-    setActiveAttacks(attackList);
-  }, [attacks]);
-  
-  const server = LOCATIONS[serverLocation];
-  
+    return [...uniqueTypes];
+  }, [telemetry, attacks]);
+  const resolvedTypeFilter =
+    typeFilter !== 'all' && !availableAttackTypes.includes(typeFilter)
+      ? 'all'
+      : typeFilter;
+
+  const server = useMemo(() => {
+    if (typeof serverLocation === 'object' && serverLocation?.lat != null && serverLocation?.lon != null) {
+      return serverLocation;
+    }
+    return SERVER_LOCATIONS[serverLocation] || SERVER_LOCATIONS.US_EAST;
+  }, [serverLocation]);
+
+  const { origins, totalRequests, activeRequests, resolvedWindowMs } = useMemo(() => {
+    if (telemetry?.origins) {
+      const mappedOrigins = telemetry.origins
+        .map((origin) => {
+          const fallback = COUNTRY_FALLBACKS[origin.country] || COUNTRY_FALLBACKS.US;
+          const selectedBucket =
+            resolvedTypeFilter === 'all'
+              ? {
+                total: origin.total || 0,
+                outcomes: origin.outcomes || {},
+              }
+              : origin.byType?.[resolvedTypeFilter];
+          const count = getResultCount(selectedBucket, resultFilter);
+
+          if (count <= 0) return null;
+
+          return {
+            country: origin.country || fallback.country || 'US',
+            name: origin.name || fallback.name,
+            lat: Number.isFinite(origin.lat) ? origin.lat : fallback.lat,
+            lon: Number.isFinite(origin.lon) ? origin.lon : fallback.lon,
+            count,
+          };
+        })
+        .filter(Boolean);
+
+      const sorted = mappedOrigins.sort((a, b) => b.count - a.count);
+      return {
+        origins: sorted.slice(0, 8),
+        totalRequests: telemetry.totalRequests || 0,
+        activeRequests: sorted.reduce((sum, origin) => sum + origin.count, 0),
+        resolvedWindowMs: telemetry.windowMs || windowMs,
+      };
+    }
+
+    const latestTimestamp = attacks.reduce((max, attack) => {
+      if (!Number.isFinite(attack.timestamp)) return max;
+      return Math.max(max, attack.timestamp);
+    }, 0);
+    const cutoff = windowMs > 0 && latestTimestamp > 0 ? latestTimestamp - windowMs : 0;
+    const inWindow = attacks.filter((attack) => {
+      if (!attack.timestamp) return true;
+      return attack.timestamp >= cutoff;
+    }).filter((attack) => {
+      const matchesType = resolvedTypeFilter === 'all' || attack.attackType === resolvedTypeFilter;
+      const matchesResult = matchesResultFilter(attack.status, resultFilter);
+      return matchesType && matchesResult;
+    });
+
+    const grouped = new Map();
+    inWindow.forEach((attack) => {
+      const country = attack.origin?.country || 'US';
+      const fallback = COUNTRY_FALLBACKS[country] || COUNTRY_FALLBACKS.US;
+      const lat = Number.isFinite(attack.origin?.lat) ? attack.origin.lat : fallback.lat;
+      const lon = Number.isFinite(attack.origin?.lon) ? attack.origin.lon : fallback.lon;
+      const name = attack.origin?.name || fallback.name;
+
+      const current = grouped.get(country) || {
+        country,
+        name,
+        lat,
+        lon,
+        count: 0,
+      };
+
+      current.count += 1;
+      current.lat = lat;
+      current.lon = lon;
+      current.name = name;
+      grouped.set(country, current);
+    });
+
+    return {
+      origins: [...grouped.values()]
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 8),
+      totalRequests: attacks.length,
+      activeRequests: inWindow.length,
+      resolvedWindowMs: windowMs,
+    };
+  }, [telemetry, attacks, windowMs, resolvedTypeFilter, resultFilter]);
+
+  const projectedServer = project(server.lat, server.lon);
+  const peak = origins[0]?.count || 1;
+  const canShowHoveredOrigin =
+    hoveredOrigin && origins.some((origin) => origin.country === hoveredOrigin.country);
+
   return (
     <div className="glass-panel p-4">
-      <h3 className="text-sm font-medium text-gray-400 mb-3 flex items-center gap-2">
-        🌍 Attack Origin Map
+      <div className="mb-3 flex items-center gap-2">
+        <h3 className="text-sm font-medium text-gray-400">Attack Origin Map</h3>
         {isUnderAttack && (
-          <span className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full animate-pulse">
+          <span className="rounded-full bg-red-500/20 px-2 py-0.5 text-xs text-red-400 animate-pulse">
             ACTIVE
           </span>
         )}
-      </h3>
-      
-      <div className="relative w-full h-64 bg-gray-900/50 rounded-lg overflow-hidden">
-        {/* Grid background */}
-        <svg className="absolute inset-0 w-full h-full opacity-20">
+        <span className="ml-auto text-xs text-gray-500">Window {Math.round(resolvedWindowMs / 1000)}s</span>
+      </div>
+
+      <div className="mb-2 flex flex-wrap gap-2">
+        <button
+          type="button"
+          aria-pressed={resolvedTypeFilter === 'all'}
+          className={`rounded-full border px-2 py-1 text-xs transition-colors ${
+            resolvedTypeFilter === 'all'
+              ? 'border-green-500/30 bg-green-500/10 text-green-400'
+              : 'border-gray-700/50 bg-gray-800/50 text-gray-400 hover:border-gray-500'
+          }`}
+          onClick={() => setTypeFilter('all')}
+        >
+          All Types
+        </button>
+        {availableAttackTypes.map((type) => (
+          <button
+            key={type}
+            type="button"
+            aria-pressed={resolvedTypeFilter === type}
+            className={`rounded-full border px-2 py-1 text-xs transition-colors ${
+              resolvedTypeFilter === type
+                ? 'border-green-500/30 bg-green-500/10 text-green-400'
+                : 'border-gray-700/50 bg-gray-800/50 text-gray-400 hover:border-gray-500'
+            }`}
+            onClick={() => setTypeFilter(type)}
+          >
+            {formatAttackTypeLabel(type)}
+          </button>
+        ))}
+      </div>
+
+      <div className="mb-3 flex flex-wrap gap-2">
+        {['all', 'blocked', 'failed', 'success'].map((option) => (
+          <button
+            key={option}
+            type="button"
+            aria-pressed={resultFilter === option}
+            className={`rounded-full border px-2 py-1 text-xs transition-colors ${
+              resultFilter === option
+                ? 'border-red-500/30 bg-red-500/10 text-red-400'
+                : 'border-gray-700/50 bg-gray-800/50 text-gray-400 hover:border-gray-500'
+            }`}
+            onClick={() => setResultFilter(option)}
+          >
+            {option === 'all' ? 'All Outcomes' : option.charAt(0).toUpperCase() + option.slice(1)}
+          </button>
+        ))}
+        {activeAttackTypeId && (
+          <button
+            type="button"
+            className="rounded-full border border-blue-500/30 bg-blue-500/10 px-2 py-1 text-xs text-blue-500 transition-colors hover:border-gray-500"
+            onClick={() => setTypeFilter(activeAttackTypeId)}
+          >
+            Focus Live Type
+          </button>
+        )}
+      </div>
+
+      <div className="attack-map-canvas relative h-64 w-full overflow-hidden rounded-lg border border-gray-700/50 bg-gray-900/50">
+        <svg className="absolute inset-0 h-full w-full" viewBox={`0 0 ${VIEWBOX.width} ${VIEWBOX.height}`} role="img" aria-label="World attack origin projection map">
           <defs>
-            <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#4a5568" strokeWidth="0.5"/>
-            </pattern>
+            <linearGradient id="mapBackground" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#0b1324" />
+              <stop offset="100%" stopColor="#05080f" />
+            </linearGradient>
+            <linearGradient id="landGradient" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#1f2937" />
+              <stop offset="100%" stopColor="#111827" />
+            </linearGradient>
           </defs>
-          <rect width="100%" height="100%" fill="url(#grid)" />
-        </svg>
-        
-        {/* Simplified continent shapes */}
-        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
-          {/* North America */}
-          <path d="M 10,20 Q 20,15 30,20 L 35,35 Q 25,45 15,40 Q 8,35 10,20" fill="#1e3a2f" stroke="#22c55e" strokeWidth="0.3" opacity="0.6"/>
-          {/* South America */}
-          <path d="M 25,50 Q 35,48 32,60 L 28,75 Q 22,72 20,60 Q 20,52 25,50" fill="#1e3a2f" stroke="#22c55e" strokeWidth="0.3" opacity="0.6"/>
-          {/* Europe */}
-          <path d="M 45,18 Q 55,15 58,22 L 56,32 Q 48,35 45,28 Q 43,22 45,18" fill="#1e3a2f" stroke="#22c55e" strokeWidth="0.3" opacity="0.6"/>
-          {/* Africa */}
-          <path d="M 45,38 Q 55,35 58,45 L 55,65 Q 48,68 45,58 Q 42,48 45,38" fill="#1e3a2f" stroke="#22c55e" strokeWidth="0.3" opacity="0.6"/>
-          {/* Asia */}
-          <path d="M 60,15 Q 85,12 90,30 L 88,48 Q 75,55 65,45 Q 58,35 60,15" fill="#1e3a2f" stroke="#22c55e" strokeWidth="0.3" opacity="0.6"/>
-          {/* Australia */}
-          <path d="M 80,60 Q 90,58 92,68 L 88,75 Q 78,76 78,68 Q 78,62 80,60" fill="#1e3a2f" stroke="#22c55e" strokeWidth="0.3" opacity="0.6"/>
-          
-          {/* Attack Lines */}
-          <AnimatePresence>
-            {activeAttacks.map((attack, idx) => (
-              <motion.g key={attack.country}>
-                {/* Attack line */}
-                <motion.line
-                  x1={attack.x}
-                  y1={attack.y}
-                  x2={server.x}
-                  y2={server.y}
-                  stroke="#ef4444"
-                  strokeWidth="0.5"
-                  strokeDasharray="2 2"
-                  initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{ pathLength: 1, opacity: 0.6 }}
-                  transition={{ duration: 1, delay: idx * 0.1 }}
-                />
-                
-                {/* Animated attack particle */}
-                {isUnderAttack && (
-                  <motion.circle
-                    r="1"
-                    fill="#ef4444"
-                    initial={{ cx: attack.x, cy: attack.y }}
-                    animate={{
-                      cx: [attack.x, server.x],
-                      cy: [attack.y, server.y],
-                    }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Infinity,
-                      delay: idx * 0.3,
-                      ease: "linear"
-                    }}
-                  />
-                )}
-                
-                {/* Origin point */}
-                <motion.circle
-                  cx={attack.x}
-                  cy={attack.y}
-                  r="2"
-                  fill="#ef4444"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: [1, 1.5, 1] }}
-                  transition={{ duration: 1, repeat: Infinity }}
-                />
-                
-                {/* Attack count label */}
-                <motion.text
-                  x={attack.x}
-                  y={attack.y - 4}
-                  fontSize="3"
-                  fill="#fff"
-                  textAnchor="middle"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
+
+          <rect width={VIEWBOX.width} height={VIEWBOX.height} fill="url(#mapBackground)" />
+
+          {Array.from({ length: 11 }).map((_, index) => {
+            const y = (index / 10) * VIEWBOX.height;
+            return <line key={`lat-${y}`} x1="0" y1={y} x2={VIEWBOX.width} y2={y} stroke="#334155" strokeWidth="1" opacity="0.3" />;
+          })}
+          {Array.from({ length: 13 }).map((_, index) => {
+            const x = (index / 12) * VIEWBOX.width;
+            return <line key={`lon-${x}`} x1={x} y1="0" x2={x} y2={VIEWBOX.height} stroke="#334155" strokeWidth="1" opacity="0.3" />;
+          })}
+
+          {LANDMASSES.map((polygon, index) => {
+            const points = polygon
+              .map(([lon, lat]) => {
+                const projected = project(lat, lon);
+                return `${projected.x},${projected.y}`;
+              })
+              .join(' ');
+            return <polygon key={`land-${index}`} points={points} className="attack-map-land" fill="url(#landGradient)" />;
+          })}
+
+          {origins.map((origin) => {
+            const ratio = origin.count / peak;
+            const color = getOriginColor(ratio);
+            const projectedOrigin = project(origin.lat, origin.lon);
+
+            return (
+              <g
+                key={origin.country}
+                onMouseEnter={() => setHoveredOrigin(origin)}
+                onMouseLeave={() => setHoveredOrigin(null)}
+              >
+                <path
+                  d={buildArcPath(projectedOrigin, projectedServer)}
+                  className={isUnderAttack ? 'attack-map-arc attack-map-arc-active' : 'attack-map-arc'}
+                  stroke={color}
+                  strokeWidth={1 + ratio * 3}
+                  style={{ opacity: 0.45 + ratio * 0.4 }}
                 >
-                  {attack.count}
-                </motion.text>
-              </motion.g>
-            ))}
-          </AnimatePresence>
-          
-          {/* Target server */}
-          <motion.circle
-            cx={server.x}
-            cy={server.y}
-            r="3"
-            fill={isUnderAttack ? "#ef4444" : "#22c55e"}
-            stroke="#fff"
-            strokeWidth="0.5"
-            animate={isUnderAttack ? { scale: [1, 1.3, 1] } : {}}
-            transition={{ duration: 0.5, repeat: Infinity }}
-          />
-          <text x={server.x} y={server.y + 6} fontSize="2.5" fill="#fff" textAnchor="middle">
-            TARGET
+                  <title>{`${origin.name} (${origin.country}) - ${origin.count} requests`}</title>
+                </path>
+                <circle
+                  cx={projectedOrigin.x}
+                  cy={projectedOrigin.y}
+                  r={3 + ratio * 5}
+                  className={isUnderAttack ? 'attack-map-origin attack-map-origin-active' : 'attack-map-origin'}
+                  fill={color}
+                >
+                  <title>{`${origin.name} (${origin.country}) - ${origin.count} requests`}</title>
+                </circle>
+                <text x={projectedOrigin.x} y={projectedOrigin.y - 12} textAnchor="middle" className="attack-map-count">
+                  {origin.count}
+                </text>
+              </g>
+            );
+          })}
+
+          <circle cx={projectedServer.x} cy={projectedServer.y} r="11" className="attack-map-server-halo" />
+          <circle cx={projectedServer.x} cy={projectedServer.y} r="5" className={isUnderAttack ? 'attack-map-server attack-map-server-danger' : 'attack-map-server'} />
+          <text x={projectedServer.x} y={projectedServer.y + 18} textAnchor="middle" className="attack-map-target-label">
+            {server.name}
           </text>
         </svg>
-        
-        {/* Legend */}
-        <div className="absolute bottom-2 left-2 flex gap-4 text-xs">
-          <div className="flex items-center gap-1">
-            <div className="w-2 h-2 rounded-full bg-red-500" />
-            <span className="text-gray-400">Attack Origin</span>
+
+        {origins.length === 0 && (
+          <div className="absolute inset-0 flex items-center justify-center text-xs text-gray-500">
+            No recent attack origins in selected time window
           </div>
-          <div className="flex items-center gap-1">
-            <div className="w-2 h-2 rounded-full bg-green-500" />
-            <span className="text-gray-400">Server</span>
+        )}
+
+        {canShowHoveredOrigin && (
+          <div className="absolute top-2 right-2 rounded-lg border border-gray-700/50 bg-gray-900/95 p-2 text-xs">
+            <div className="font-bold text-white">{hoveredOrigin.name}</div>
+            <div className="text-gray-400">Code: {hoveredOrigin.country}</div>
+            <div className="text-gray-400">Requests: {hoveredOrigin.count}</div>
+            <div className="text-gray-500">{`${hoveredOrigin.lat.toFixed(2)}, ${hoveredOrigin.lon.toFixed(2)}`}</div>
           </div>
+        )}
+      </div>
+
+      <div className="mt-3 flex items-center gap-4 text-xs text-gray-400">
+        <span>{origins.length} origin zones</span>
+        <span>{activeRequests} matching requests</span>
+        <span>{totalRequests} attacks in window</span>
+      </div>
+
+      <div className="mt-2 flex items-center gap-4 text-xs text-gray-500">
+        <div className="flex items-center gap-1">
+          <div className="w-2 h-2 rounded-full bg-green-500" />
+          <span>Target server</span>
         </div>
-        
-        {/* Stats overlay */}
-        <div className="absolute top-2 right-2 text-xs text-gray-400">
-          <div>{activeAttacks.length} origins</div>
-          <div>{attacks.length} requests</div>
+        <div className="flex items-center gap-1">
+          <div className="w-2 h-2 rounded-full bg-yellow-500" />
+          <span>Medium source volume</span>
         </div>
+        <div className="flex items-center gap-1">
+          <div className="w-2 h-2 rounded-full bg-red-500" />
+          <span>High source volume</span>
+        </div>
+      </div>
+
+      <div className="mt-3 space-y-2">
+        {origins.slice(0, 4).map((origin) => {
+          const ratio = origin.count / peak;
+          const color = getOriginColor(ratio);
+          return (
+            <div key={`rank-${origin.country}`} className="flex items-center gap-2 text-xs">
+              <span className="w-16 truncate text-gray-400" title={origin.name}>
+                {origin.country}
+              </span>
+              <div className="h-2 flex-1 overflow-hidden rounded-full bg-gray-800">
+                <div className="h-full rounded-full" style={{ width: `${Math.max(8, ratio * 100)}%`, backgroundColor: color }} />
+              </div>
+              <span className="w-10 text-right font-mono text-gray-300">{origin.count}</span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

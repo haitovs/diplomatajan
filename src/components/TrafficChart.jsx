@@ -4,7 +4,7 @@ export const TrafficChart = ({ data }) => {
   return (
     <div className="glass-panel p-6 h-300 flex flex-col">
       <h2 className="text-xl font-bold mb-4 text-white">Traffic Volume (RPS)</h2>
-      <div className="flex-1 min-h-0">
+      <div className="flex-1 min-h-0 relative">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={data}
@@ -47,6 +47,12 @@ export const TrafficChart = ({ data }) => {
             />
           </AreaChart>
         </ResponsiveContainer>
+
+        {data.length === 0 && (
+          <div className="absolute inset-0 flex items-center justify-center text-xs text-gray-500">
+            Waiting for traffic data...
+          </div>
+        )}
       </div>
     </div>
   );

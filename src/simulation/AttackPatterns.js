@@ -151,15 +151,16 @@ export class AttackPatternGenerator {
     let username, password, ip, origin;
     
     switch (type.id) {
-      case 'dictionary':
+      case 'dictionary': {
         username = COMMON_USERNAMES[Math.floor(Math.random() * COMMON_USERNAMES.length)];
         password = COMMON_PASSWORDS[this.passwordIndex % COMMON_PASSWORDS.length];
         this.passwordIndex++;
         ip = `192.168.1.${100 + Math.floor(Math.random() * type.ipSpread)}`;
         origin = ATTACK_ORIGINS[0];
         break;
+      }
         
-      case 'credential_stuffing':
+      case 'credential_stuffing': {
         // Simulated leaked credentials
         username = `user${Math.floor(Math.random() * 10000)}@example.com`;
         password = `pass${Math.floor(Math.random() * 1000)}`;
@@ -167,36 +168,41 @@ export class AttackPatternGenerator {
         ip = this.botnetIps[botIdx].ip;
         origin = this.botnetIps[botIdx].origin;
         break;
+      }
         
-      case 'password_spray':
+      case 'password_spray': {
         username = COMMON_USERNAMES[this.usernameIndex % COMMON_USERNAMES.length];
         this.usernameIndex++;
         password = 'Password123!'; // Single password
         ip = `192.168.1.${100 + Math.floor(Math.random() * type.ipSpread)}`;
         origin = ATTACK_ORIGINS[2];
         break;
+      }
         
-      case 'distributed':
+      case 'distributed': {
         username = COMMON_USERNAMES[Math.floor(Math.random() * COMMON_USERNAMES.length)];
         password = COMMON_PASSWORDS[Math.floor(Math.random() * COMMON_PASSWORDS.length)];
         const botnetIdx = Math.floor(Math.random() * Math.min(type.ipSpread, this.botnetIps.length));
         ip = this.botnetIps[botnetIdx].ip;
         origin = this.botnetIps[botnetIdx].origin;
         break;
+      }
         
-      case 'reverse_brute':
+      case 'reverse_brute': {
         username = `user${this.usernameIndex}`;
         this.usernameIndex++;
         password = 'Summer2024!'; // Fixed password
         ip = `192.168.1.${100 + Math.floor(Math.random() * type.ipSpread)}`;
         origin = ATTACK_ORIGINS[3];
         break;
+      }
         
-      default:
+      default: {
         username = 'admin';
         password = 'password';
         ip = '192.168.1.100';
         origin = ATTACK_ORIGINS[0];
+      }
     }
     
     return {

@@ -1,20 +1,14 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
-/**
- * Theme Context
- * Provides theme state and toggle functionality
- */
 const ThemeContext = createContext({
   theme: 'dark',
   toggleTheme: () => {},
+  setTheme: () => {},
+  themes: {},
 });
+const useTheme = () => useContext(ThemeContext);
 
-export const useTheme = () => useContext(ThemeContext);
-
-/**
- * Theme definitions
- */
-export const THEMES = {
+const THEMES = {
   dark: {
     id: 'dark',
     name: 'Dark Mode',
@@ -81,80 +75,80 @@ export const THEMES = {
   },
 };
 
-/**
- * Theme Provider Component
- */
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState('dark');
-  
-  // Load theme from localStorage on mount
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('soc-theme') || 'dark';
-    setTheme(savedTheme);
-    applyTheme(savedTheme);
-  }, []);
-  
-  // Apply theme to document
-  const applyTheme = (themeId) => {
+  const [theme, setTheme] = useState(() => {
+    if (typeof window === 'undefined') return 'dark';
+    const savedTheme = window.localStorage.getItem('soc-theme');
+    if (savedTheme && THEMES[savedTheme]) return savedTheme;
+    return 'dark';
+  });
+
+  const applyTheme = useCallback((themeId) => {
     const themeConfig = THEMES[themeId];
     if (!themeConfig) return;
-    
-    const root = document.documentElement;
+
     Object.entries(themeConfig.colors).forEach(([key, value]) => {
-      root.style.setProperty(key, value);
+      document.documentElement.style.setProperty(key, value);
     });
-    
-    // Add theme class for additional styling
-    document.body.className = `theme-${themeId}`;
-  };
-  
-  // Toggle to next theme
-  const toggleTheme = () => {
+
+    Object.keys(THEMES).forEach((id) => {
+      document.body.classList.remove(`theme-${id}`);
+    });
+    document.body.classList.add(`theme-${themeId}`);
+  }, []);
+
+  useEffect(() => {
+    applyTheme(theme);
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('soc-theme', theme);
+    }
+  }, [theme, applyTheme]);
+
+  const toggleTheme = useCallback(() => {
     const themeIds = Object.keys(THEMES);
     const currentIndex = themeIds.indexOf(theme);
-    const nextIndex = (currentIndex + 1) % themeIds.length;
-    const nextTheme = themeIds[nextIndex];
-    
+    const nextTheme = themeIds[(currentIndex + 1) % themeIds.length];
+
     setTheme(nextTheme);
-    applyTheme(nextTheme);
-    localStorage.setItem('soc-theme', nextTheme);
-  };
-  
-  // Set specific theme
-  const setSpecificTheme = (themeId) => {
-    if (THEMES[themeId]) {
-      setTheme(themeId);
-      applyTheme(themeId);
-      localStorage.setItem('soc-theme', themeId);
-    }
-  };
-  
+  }, [theme]);
+
+  const setSpecificTheme = useCallback((themeId) => {
+    if (!THEMES[themeId]) return;
+    setTheme(themeId);
+  }, []);
+
+  const value = useMemo(() => ({
+    theme,
+    toggleTheme,
+    setTheme: setSpecificTheme,
+    themes: THEMES,
+  }), [theme, toggleTheme, setSpecificTheme]);
+
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme: setSpecificTheme, themes: THEMES }}>
+    <ThemeContext.Provider value={value}>
       {children}
     </ThemeContext.Provider>
   );
 };
 
-/**
- * Theme Selector Component
- */
 export const ThemeSelector = () => {
   const { theme, setTheme, themes } = useTheme();
-  
+
   return (
     <div className="theme-selector">
       <div className="flex gap-2">
         {Object.values(themes).map((t) => (
           <button
             key={t.id}
+            type="button"
             onClick={() => setTheme(t.id)}
-            className={`theme-btn p-2 rounded-lg transition-all ${
-              theme === t.id 
-                ? 'bg-primary/20 border-primary' 
+            className={`theme-btn p-2 rounded-lg transition-all border ${
+              theme === t.id
+                ? 'bg-green-500/10 border-green-500/30'
                 : 'bg-gray-800/50 border-gray-700 hover:border-gray-500'
-            } border`}
+            }`}
             title={t.name}
+            aria-label={`Switch to ${t.name}`}
           >
             <span className="text-lg">{t.icon}</span>
           </button>
@@ -164,18 +158,17 @@ export const ThemeSelector = () => {
   );
 };
 
-/**
- * Theme Toggle Button (simple toggle)
- */
 export const ThemeToggle = () => {
   const { theme, toggleTheme, themes } = useTheme();
   const currentTheme = themes[theme];
-  
+
   return (
     <button
+      type="button"
       onClick={toggleTheme}
       className="theme-toggle px-3 py-2 rounded-lg bg-gray-800/50 border border-gray-700 hover:border-gray-500 transition-all flex items-center gap-2"
       title={`Current: ${currentTheme?.name}. Click to change.`}
+      aria-label="Change visual theme"
     >
       <span className="text-lg">{currentTheme?.icon}</span>
       <span className="text-xs text-gray-400 hidden sm:inline">{currentTheme?.name}</span>

@@ -2,6 +2,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 
+const MotionDiv = motion.div;
+const MotionSpan = motion.span;
+
 /**
  * Mobile Navigation Component
  * Collapsible navigation for mobile devices
@@ -25,7 +28,7 @@ export const MobileNav = ({ children, title = 'Menu' }) => {
         {isOpen && (
           <>
             {/* Backdrop */}
-            <motion.div
+            <MotionDiv
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -34,7 +37,7 @@ export const MobileNav = ({ children, title = 'Menu' }) => {
             />
             
             {/* Drawer */}
-            <motion.div
+            <MotionDiv
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
@@ -57,7 +60,7 @@ export const MobileNav = ({ children, title = 'Menu' }) => {
               <div className="p-4">
                 {children}
               </div>
-            </motion.div>
+            </MotionDiv>
           </>
         )}
       </AnimatePresence>
@@ -105,17 +108,17 @@ export const CollapsiblePanel = ({ title, icon, children, defaultOpen = false })
           {icon && <span className="text-lg">{icon}</span>}
           <span className="font-medium">{title}</span>
         </div>
-        <motion.span
+        <MotionSpan
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.2 }}
         >
           ▼
-        </motion.span>
+        </MotionSpan>
       </button>
       
       <AnimatePresence>
         {isOpen && (
-          <motion.div
+          <MotionDiv
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -124,7 +127,7 @@ export const CollapsiblePanel = ({ title, icon, children, defaultOpen = false })
             <div className="p-4 pt-0">
               {children}
             </div>
-          </motion.div>
+          </MotionDiv>
         )}
       </AnimatePresence>
     </div>

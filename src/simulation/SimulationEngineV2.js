@@ -20,6 +20,11 @@ export const RESPONSE_CODES = {
   429: 'Too Many Requests',
 };
 
+export const ANALYTICS_WINDOW_MS = 90_000;
+const UI_LOG_WINDOW_SIZE = 220;
+const MAX_LOGS_BUFFER = 4000;
+const MAX_ATTACK_TELEMETRY_EVENTS = 45_000;
+
 /**
  * Enhanced Simulation Engine
  */
@@ -31,7 +36,19 @@ export class SimulationEngineV2 {
     
     // Logs
     this.logs = [];
-    this.maxLogs = 200;
+    this.maxLogs = MAX_LOGS_BUFFER;
+    this.attackTelemetry = [];
+    this.attackTelemetryWindowMs = ANALYTICS_WINDOW_MS;
+    this.maxAttackTelemetryEvents = MAX_ATTACK_TELEMETRY_EVENTS;
+    this.attackTelemetryDirty = true;
+    this.lastAttackTelemetrySnapshotAt = 0;
+    this.lastAttackTelemetrySnapshot = {
+      generatedAt: Date.now(),
+      windowMs: ANALYTICS_WINDOW_MS,
+      totalRequests: 0,
+      availableAttackTypes: [],
+      origins: [],
+    };
     
     // Statistics
     this.stats = {
@@ -81,8 +98,10 @@ export class SimulationEngineV2 {
    * Notify all subscribers
    */
   notify() {
+    const attackTelemetry = this.getAttackTelemetrySnapshot();
     const state = {
-      logs: this.logs.slice(-50),
+      logs: this.logs.slice(-UI_LOG_WINDOW_SIZE),
+      attackTelemetry,
       stats: this.getStats(),
       config: this.getConfig(),
       defenses: this.defenseManager.getDefenses(),
@@ -179,7 +198,6 @@ export class SimulationEngineV2 {
    * Main simulation tick
    */
   tick() {
-    const now = Date.now();
     const requests = [];
     
     // 1. Generate normal traffic
@@ -194,7 +212,7 @@ export class SimulationEngineV2 {
     }
     
     // 3. Process all requests
-    requests.forEach(req => this.processRequest(req, now));
+    requests.forEach(req => this.processRequest(req));
     
     // 4. Update stats
     this.lastTickRequests = requests.length;
@@ -208,6 +226,8 @@ export class SimulationEngineV2 {
     if (this.config.isUnderAttack && this.attackStartTime) {
       this.stats.attackDuration = Date.now() - this.attackStartTime;
     }
+
+    this.trimAttackTelemetry(Date.now());
     
     // 5. Notify subscribers
     this.notify();
@@ -236,7 +256,7 @@ export class SimulationEngineV2 {
   /**
    * Process a single request
    */
-  processRequest(request, now) {
+  processRequest(request) {
     this.stats.totalRequests++;
     
     // Apply defense mechanisms
@@ -329,6 +349,126 @@ export class SimulationEngineV2 {
     while (this.logs.length > this.maxLogs) {
       this.logs.shift();
     }
+
+    if (request.type === REQUEST_TYPES.ATTACK) {
+      this.attackTelemetry.push({
+        timestamp: request.timestamp,
+        attackType: request.attackType || this.config.attackType,
+        status,
+        origin: request.origin
+          ? {
+            country: request.origin.country || null,
+            name: request.origin.name || null,
+            lat: Number.isFinite(request.origin.lat) ? request.origin.lat : null,
+            lon: Number.isFinite(request.origin.lon) ? request.origin.lon : null,
+          }
+          : null,
+      });
+      this.attackTelemetryDirty = true;
+    }
+  }
+
+  getOutcome(status) {
+    if ([403, 423, 428, 429].includes(status)) return 'blocked';
+    if (status === 401) return 'failed';
+    if (status === 200) return 'success';
+    return 'other';
+  }
+
+  trimAttackTelemetry(referenceTimestamp = Date.now()) {
+    if (this.attackTelemetry.length === 0) return;
+
+    const cutoff = referenceTimestamp - this.attackTelemetryWindowMs;
+    let firstInWindowIndex = 0;
+    while (
+      firstInWindowIndex < this.attackTelemetry.length &&
+      this.attackTelemetry[firstInWindowIndex].timestamp < cutoff
+    ) {
+      firstInWindowIndex += 1;
+    }
+
+    if (firstInWindowIndex > 0) {
+      this.attackTelemetry = this.attackTelemetry.slice(firstInWindowIndex);
+      this.attackTelemetryDirty = true;
+    }
+
+    if (this.attackTelemetry.length > this.maxAttackTelemetryEvents) {
+      this.attackTelemetry = this.attackTelemetry.slice(-this.maxAttackTelemetryEvents);
+      this.attackTelemetryDirty = true;
+    }
+  }
+
+  getAttackTelemetrySnapshot() {
+    const now = Date.now();
+    if (!this.attackTelemetryDirty && now - this.lastAttackTelemetrySnapshotAt < 1000) {
+      return this.lastAttackTelemetrySnapshot;
+    }
+
+    const originMap = new Map();
+    const attackTypeSet = new Set();
+
+    this.attackTelemetry.forEach((entry) => {
+      const typeId = entry.attackType || this.config.attackType || 'unknown';
+      const outcome = this.getOutcome(entry.status);
+      const origin = entry.origin || {};
+      const country = origin.country || 'US';
+      const key = country;
+
+      attackTypeSet.add(typeId);
+
+      if (!originMap.has(key)) {
+        originMap.set(key, {
+          country,
+          name: origin.name || country,
+          lat: Number.isFinite(origin.lat) ? origin.lat : null,
+          lon: Number.isFinite(origin.lon) ? origin.lon : null,
+          total: 0,
+          outcomes: {
+            blocked: 0,
+            failed: 0,
+            success: 0,
+            other: 0,
+          },
+          byType: {},
+        });
+      }
+
+      const current = originMap.get(key);
+      current.total += 1;
+      current.outcomes[outcome] += 1;
+
+      if (origin.name) current.name = origin.name;
+      if (Number.isFinite(origin.lat)) current.lat = origin.lat;
+      if (Number.isFinite(origin.lon)) current.lon = origin.lon;
+
+      if (!current.byType[typeId]) {
+        current.byType[typeId] = {
+          total: 0,
+          outcomes: {
+            blocked: 0,
+            failed: 0,
+            success: 0,
+            other: 0,
+          },
+        };
+      }
+
+      current.byType[typeId].total += 1;
+      current.byType[typeId].outcomes[outcome] += 1;
+    });
+
+    const snapshot = {
+      generatedAt: now,
+      windowMs: this.attackTelemetryWindowMs,
+      totalRequests: this.attackTelemetry.length,
+      availableAttackTypes: [...attackTypeSet],
+      origins: [...originMap.values()].sort((a, b) => b.total - a.total),
+    };
+
+    this.lastAttackTelemetrySnapshotAt = now;
+    this.lastAttackTelemetrySnapshot = snapshot;
+    this.attackTelemetryDirty = false;
+    return snapshot;
   }
 
   /**
@@ -381,6 +521,8 @@ export class SimulationEngineV2 {
    */
   reset() {
     this.logs = [];
+    this.attackTelemetry = [];
+    this.attackTelemetryDirty = true;
     this.alerts = [];
     this.stats = {
       totalRequests: 0,
