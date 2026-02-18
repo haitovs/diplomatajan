@@ -145,7 +145,7 @@ export const ControlPanelV2 = ({
             <Shield size={16} /> Defense Mechanisms
           </h3>
           
-          <div className="space-y-3">
+          <div className="space-y-3 max-h-64 overflow-y-auto custom-scrollbar pr-1">
             {orderedDefenses.map(defense => (
               <div key={defense.id} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">

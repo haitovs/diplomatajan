@@ -216,20 +216,18 @@ function AppV2() {
         </section>
 
         <p className="text-xs text-gray-500 mb-2">Response Operations</p>
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-          <div className="min-w-0">
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+          <div className="min-w-0 space-y-6">
             <ThreatGauge
               level={threatLevel.level}
               label={threatLevel.label}
               color={threatLevel.color}
             />
-          </div>
 
-          <div className="min-w-0">
             <AlertPanel alerts={state.alerts} />
           </div>
 
-          <div className="md:col-span-2 lg:col-span-2 min-w-0">
+          <div className="min-w-0 lg:col-span-2">
             <ControlPanelV2
               config={state.config}
               defenses={state.defenses}

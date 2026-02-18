@@ -80,3 +80,4 @@ Upgrade the dashboard from raw prototype quality to a production-grade SOC inter
 - 2026-02-17: Added repeatable screenshot capture pipeline (`vite.config.legacy.js`, `src/mainLegacy.jsx`, `scripts/capture-ui-screenshots.mjs`) and captured baseline vs redesigned panel artifacts under `docs/ui-screenshots`.
 - 2026-02-17: Closed Phase 0 screenshot task with generated full-dashboard and panel-level before/after captures (traffic, control, logs, plus new attack map in redesigned UI).
 - 2026-02-17: Updated ESLint ignore configuration to include `dist-legacy` so legacy screenshot baseline builds do not introduce lint noise.
+- 2026-02-17: Removed large dead space in `Response Operations` by converting to a stacked left-rail layout (`ThreatGauge` + `AlertPanel`) with a dedicated right command column, and capped defense-list height in `ControlPanelV2` with internal scroll.
