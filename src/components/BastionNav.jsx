@@ -1,4 +1,4 @@
-import { Activity, FileText, FlaskConical, Shield, Sparkles } from 'lucide-react';
+import { Activity, CircleHelp, FileText, FlaskConical, Shield, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useI18n } from '../i18n/I18nProvider';
 
@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { id: 'defense', icon: Shield, key: 'common.navigation.defense' },
   { id: 'comparison', icon: FlaskConical, key: 'common.navigation.comparison' },
   { id: 'reports', icon: FileText, key: 'common.navigation.reports' },
+  { id: 'guide', icon: CircleHelp, key: 'common.navigation.guide' },
 ];
 
 const MotionButton = motion.button;

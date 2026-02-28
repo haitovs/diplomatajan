@@ -8,6 +8,7 @@ It extends the existing brute-force simulator into an interactive decision platf
 - Defense Lab (interactive control tuning)
 - Baseline vs Hardened comparison snapshots
 - Bilingual report export (`tk-TM`, `en-US`)
+- In-app Guide page explaining workflow, usefulness, and quick-start steps
 - Turkmen-first localization with locale completeness checks
 
 ## What was implemented

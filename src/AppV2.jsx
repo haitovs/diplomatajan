@@ -17,6 +17,7 @@ import { LanguageSwitcher } from './components/LanguageSwitcher';
 import { RecommendationsPanel } from './components/RecommendationsPanel';
 import { ReportExporter } from './components/ReportExporter';
 import { ScenarioComposer } from './components/ScenarioComposer';
+import { GuidePage } from './components/GuidePage';
 import { ServerHealth } from './components/ServerHealth';
 import { StatCard } from './components/StatCard';
 import { ThemeToggle } from './components/ThemeProvider';
@@ -42,8 +43,10 @@ const MAP_WINDOW_MS = ANALYTICS_WINDOW_MS;
 const CHART_WINDOW_SECONDS = Math.round(ANALYTICS_WINDOW_MS / 1000);
 const CHART_SAMPLE_INTERVAL_MS = 1000;
 const SCENARIO_STORAGE_KEY = 'bastion-scenarios-v1';
+const VIEW_STORAGE_KEY = 'bastion-active-view-v1';
 const DEFAULT_VIEW = 'workspace';
 const ATTACK_TYPE_LIST = Object.values(ATTACK_TYPES);
+const VALID_VIEWS = new Set(['workspace', 'scenario', 'defense', 'comparison', 'reports', 'guide']);
 
 const createInitialScenarioDraft = () => ({
   id: null,
@@ -175,7 +178,11 @@ function AppV2() {
   
   const [chartData, setChartData] = useState([]);
   const [threatLevel, setThreatLevel] = useState({ level: 0, label: 'MINIMAL', color: '#6366f1' });
-  const [activeView, setActiveView] = useState(DEFAULT_VIEW);
+  const [activeView, setActiveView] = useState(() => {
+    if (typeof window === 'undefined') return DEFAULT_VIEW;
+    const savedView = window.localStorage.getItem(VIEW_STORAGE_KEY);
+    return savedView && VALID_VIEWS.has(savedView) ? savedView : DEFAULT_VIEW;
+  });
   const [scenarioDraft, setScenarioDraft] = useState(() => ({
     ...createInitialScenarioDraft(),
     attackType: engine.getConfig().attackType,
@@ -204,6 +211,12 @@ function AppV2() {
     if (typeof window === 'undefined') return;
     window.localStorage.setItem(SCENARIO_STORAGE_KEY, JSON.stringify(savedScenarios));
   }, [savedScenarios]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const viewToPersist = VALID_VIEWS.has(activeView) ? activeView : DEFAULT_VIEW;
+    window.localStorage.setItem(VIEW_STORAGE_KEY, viewToPersist);
+  }, [activeView]);
 
   useEffect(() => {
     engine.start();
@@ -373,6 +386,7 @@ function AppV2() {
   const selectedScenario = selectedScenarioId
     ? savedScenarios.find((scenario) => scenario.id === selectedScenarioId)
     : null;
+  const safeActiveView = VALID_VIEWS.has(activeView) ? activeView : DEFAULT_VIEW;
 
   return (
     <main className="min-h-screen p-4 md:p-6 font-sans bastion-app">
@@ -431,10 +445,11 @@ function AppV2() {
           </div>
         </header>
 
-        <BastionNav activeView={activeView} onChange={setActiveView} />
+        <BastionNav activeView={safeActiveView} onChange={setActiveView} />
 
-        {activeView === 'workspace' && (
-          <>
+        <div className="bastion-view-shell">
+          {safeActiveView === 'workspace' && (
+            <>
             <p className="text-xs text-bastion-text-mid mb-2">{t('dashboard.sessionTotals')}</p>
             <section className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
               <StatCard title={t('dashboard.stats.totalRequests')} value={formatNumber(state.stats.totalRequests)} icon={Activity} color="#1fa89a" />
@@ -557,65 +572,68 @@ function AppV2() {
                 <LogTable logs={state.logs} />
               </Suspense>
             </section>
-          </>
-        )}
+            </>
+          )}
 
-        {activeView === 'scenario' && (
-          <ScenarioComposer
-            attackTypes={ATTACK_TYPE_LIST}
-            draft={scenarioDraft}
-            riskScore={scenarioRiskScore}
-            scenarios={savedScenarios}
-            selectedScenarioId={selectedScenarioId}
-            onDraftChange={handleScenarioDraftChange}
-            onSave={handleSaveScenario}
-            onRun={handleRunScenario}
-            onSelectScenario={handleSelectScenario}
-            error={scenarioError}
-          />
-        )}
+          {safeActiveView === 'scenario' && (
+            <ScenarioComposer
+              attackTypes={ATTACK_TYPE_LIST}
+              draft={scenarioDraft}
+              riskScore={scenarioRiskScore}
+              scenarios={savedScenarios}
+              selectedScenarioId={selectedScenarioId}
+              onDraftChange={handleScenarioDraftChange}
+              onSave={handleSaveScenario}
+              onRun={handleRunScenario}
+              onSelectScenario={handleSelectScenario}
+              error={scenarioError}
+            />
+          )}
 
-        {activeView === 'defense' && (
-          <section className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-            <div className="lg:col-span-3">
-              <ControlPanelV2
-                config={state.config}
-                defenses={state.defenses}
-                onToggleAttack={handleToggleAttack}
-                onSetIntensity={handleSetIntensity}
-                onSetAttackType={handleSetAttackType}
-                onToggleDefense={handleToggleDefense}
-              />
-              <div className="mt-4 flex flex-wrap gap-3">
-                <button type="button" className="bastion-outline-btn" onClick={() => handleApplyPreset('balanced')}>
-                  {t('defense.actions.applyPresetBalanced')}
-                </button>
-                <button type="button" className="bastion-outline-btn" onClick={() => handleApplyPreset('strict')}>
-                  {t('defense.actions.applyPresetStrict')}
-                </button>
-                <button type="button" className="bastion-primary-btn" onClick={handleGenerateRecommendations}>
-                  {t('defense.actions.generateRecommendations')}
-                </button>
+          {safeActiveView === 'defense' && (
+            <section className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+              <div className="lg:col-span-3">
+                <ControlPanelV2
+                  config={state.config}
+                  defenses={state.defenses}
+                  onToggleAttack={handleToggleAttack}
+                  onSetIntensity={handleSetIntensity}
+                  onSetAttackType={handleSetAttackType}
+                  onToggleDefense={handleToggleDefense}
+                />
+                <div className="mt-4 flex flex-wrap gap-3">
+                  <button type="button" className="bastion-outline-btn" onClick={() => handleApplyPreset('balanced')}>
+                    {t('defense.actions.applyPresetBalanced')}
+                  </button>
+                  <button type="button" className="bastion-outline-btn" onClick={() => handleApplyPreset('strict')}>
+                    {t('defense.actions.applyPresetStrict')}
+                  </button>
+                  <button type="button" className="bastion-primary-btn" onClick={handleGenerateRecommendations}>
+                    {t('defense.actions.generateRecommendations')}
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="lg:col-span-2">
-              <RecommendationsPanel items={recommendations} />
-            </div>
-          </section>
-        )}
+              <div className="lg:col-span-2">
+                <RecommendationsPanel items={recommendations} />
+              </div>
+            </section>
+          )}
 
-        {activeView === 'comparison' && (
-          <ComparisonView baselineSnapshot={baselineSnapshot} hardenedSnapshot={hardenedSnapshot} />
-        )}
+          {safeActiveView === 'comparison' && (
+            <ComparisonView baselineSnapshot={baselineSnapshot} hardenedSnapshot={hardenedSnapshot} />
+          )}
 
-        {activeView === 'reports' && (
-          <ReportExporter
-            scenario={selectedScenario || scenarioDraft}
-            baselineSnapshot={baselineSnapshot}
-            hardenedSnapshot={hardenedSnapshot}
-            recommendations={recommendations}
-          />
-        )}
+          {safeActiveView === 'reports' && (
+            <ReportExporter
+              scenario={selectedScenario || scenarioDraft}
+              baselineSnapshot={baselineSnapshot}
+              hardenedSnapshot={hardenedSnapshot}
+              recommendations={recommendations}
+            />
+          )}
+
+          {safeActiveView === 'guide' && <GuidePage />}
+        </div>
       </div>
     </main>
   );

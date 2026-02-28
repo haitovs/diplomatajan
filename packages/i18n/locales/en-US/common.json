@@ -11,7 +11,8 @@
     "scenario": "Scenario Composer",
     "defense": "Defense Lab",
     "comparison": "Comparison View",
-    "reports": "Reports"
+    "reports": "Reports",
+    "guide": "How It Works"
   },
   "actions": {
     "start": "Start Run",

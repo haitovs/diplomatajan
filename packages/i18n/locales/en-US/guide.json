@@ -1,0 +1,68 @@
+{
+  "title": "How Bastion Twin Works",
+  "subtitle": "Understand the workflow, practical value, and best way to use the platform",
+  "overview": {
+    "title": "What This Platform Is",
+    "body": "Bastion Twin is an interactive cyber-defense planning workspace for SME teams. It simulates realistic login/API attacks, lets you tune controls in real time, and converts results into implementation-ready actions."
+  },
+  "workflow": {
+    "title": "How It Works",
+    "steps": {
+      "compose": {
+        "title": "1. Compose Scenario",
+        "body": "Set attack type, intensity, target surface, and business profile."
+      },
+      "run": {
+        "title": "2. Run Live Simulation",
+        "body": "Launch the scenario and monitor traffic, map origins, and threat levels."
+      },
+      "tune": {
+        "title": "3. Tune Defenses",
+        "body": "Enable/disable controls and immediately observe security KPI changes."
+      },
+      "compare": {
+        "title": "4. Compare Baseline vs Hardened",
+        "body": "Capture snapshots and measure what improved after hardening."
+      },
+      "report": {
+        "title": "5. Export Action Plan",
+        "body": "Generate bilingual reports to share with engineering and leadership."
+      }
+    }
+  },
+  "usefulness": {
+    "title": "Most Useful Parts",
+    "items": {
+      "risk": {
+        "title": "Risk Visibility",
+        "body": "See where threats are coming from and how severe the exposure is."
+      },
+      "decision": {
+        "title": "Decision Confidence",
+        "body": "Test defense combinations before changing production policies."
+      },
+      "roi": {
+        "title": "Measurable ROI",
+        "body": "Use comparison metrics to justify security investments with evidence."
+      },
+      "alignment": {
+        "title": "Team Alignment",
+        "body": "Share a common view with Ops, Security, and Management using the same report."
+      }
+    }
+  },
+  "quickStart": {
+    "title": "How To Use This Website (Quick Start)",
+    "steps": {
+      "one": "Open Scenario Composer and save one scenario for your environment.",
+      "two": "Run it from Workspace and record a baseline snapshot.",
+      "three": "Move to Defense Lab and apply/tune controls.",
+      "four": "Capture a hardened snapshot and review Comparison View.",
+      "five": "Generate recommendations and export report in tk/en."
+    }
+  },
+  "tips": {
+    "title": "Best Practice",
+    "body": "Re-run your core scenarios monthly or after major auth/policy changes. Track trend improvements over time."
+  }
+}
