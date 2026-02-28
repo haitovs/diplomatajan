@@ -1,0 +1,41 @@
+{
+  "appName": "Bastion Twin",
+  "tagline": "KOB-lar üçin Kiber Gorag Meýilleşdiriji",
+  "language": "Dil",
+  "languages": {
+    "tk-TM": "Türkmençe",
+    "en-US": "Iňlisçe"
+  },
+  "navigation": {
+    "workspace": "Iş giňişligi paneli",
+    "scenario": "Ssenariý düzüji",
+    "defense": "Gorag laboratoriýasy",
+    "comparison": "Deňeşdirme görnüşi",
+    "reports": "Hasabatlar"
+  },
+  "actions": {
+    "start": "Işlet",
+    "stop": "Sakla",
+    "reset": "Täzeden başlat",
+    "save": "Ýatda sakla",
+    "apply": "Ulan",
+    "export": "Eksport",
+    "generate": "Döret",
+    "snapshotBaseline": "Başlangyçy ýaz",
+    "snapshotHardened": "Güýçlendirilenini ýaz"
+  },
+  "states": {
+    "running": "Işleýär",
+    "stopped": "Saklandy",
+    "underAttack": "Hüjüm astynda",
+    "secure": "Ulgam goragly",
+    "noData": "Maglumat ýok"
+  },
+  "labels": {
+    "window": "Penjire",
+    "active": "Işjeň",
+    "inactive": "Işjeň däl",
+    "estimated": "Çaklanylýan",
+    "risk": "Töwekgelçilik"
+  }
+}

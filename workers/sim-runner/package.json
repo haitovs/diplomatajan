@@ -1,0 +1,20 @@
+{
+  "name": "@bastion/sim-runner",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/worker.ts",
+    "start": "node dist/worker.js",
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "bullmq": "^5.63.0",
+    "ioredis": "^5.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.7",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}

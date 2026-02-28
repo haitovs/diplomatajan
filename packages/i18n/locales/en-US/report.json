@@ -1,0 +1,22 @@
+{
+  "title": "Reports",
+  "subtitle": "Export actionable bilingual implementation reports",
+  "actions": {
+    "exportTk": "Export Turkmen",
+    "exportEn": "Export English",
+    "exportBoth": "Export Bilingual"
+  },
+  "sections": {
+    "overview": "Overview",
+    "comparison": "Baseline vs Hardened",
+    "recommendations": "Recommendations",
+    "nextSteps": "Next Steps"
+  },
+  "labels": {
+    "generatedAt": "Generated At",
+    "scenario": "Scenario",
+    "baseline": "Baseline",
+    "hardened": "Hardened"
+  },
+  "empty": "Create snapshots and recommendations before exporting a report"
+}

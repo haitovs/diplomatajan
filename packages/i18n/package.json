@@ -1,0 +1,10 @@
+{
+  "name": "@bastion/i18n",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "check": "node scripts/check-completeness.mjs"
+  }
+}

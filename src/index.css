@@ -1414,6 +1414,205 @@ table {
   font-family: 'JetBrains Mono', 'Courier New', monospace;
 }
 
+/* Bastion Atlas theme */
+:root {
+  --bg-900: #0a1418;
+  --bg-800: #122128;
+  --surface-700: #1b2f38;
+  --accent-copper: #c66b3d;
+  --accent-teal: #1fa89a;
+  --danger-red: #d9382c;
+  --warning-amber: #e2a33b;
+  --text-high: #e7efea;
+  --text-mid: #a7b8b1;
+  --line-soft: rgba(201, 222, 214, 0.18);
+}
+
+.bastion-app {
+  background:
+    radial-gradient(800px 500px at 12% -8%, rgba(198, 107, 61, 0.12), transparent 68%),
+    radial-gradient(1000px 560px at 92% -15%, rgba(31, 168, 154, 0.12), transparent 66%),
+    linear-gradient(180deg, var(--bg-900), #0c1a20 55%, #091218);
+}
+
+.bastion-heading {
+  font-family: 'IBM Plex Sans', 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--text-high);
+  letter-spacing: 0.01em;
+}
+
+.text-bastion-text-mid {
+  color: var(--text-mid);
+}
+
+.text-bastion-text-high {
+  color: var(--text-high);
+}
+
+.text-bastion-accent-teal {
+  color: var(--accent-teal);
+}
+
+.text-bastion-accent-copper {
+  color: var(--accent-copper);
+}
+
+.bg-bastion-panel {
+  background: rgba(18, 33, 40, 0.76);
+}
+
+.border-bastion-line {
+  border-color: var(--line-soft);
+}
+
+.border-bastion-accent-copper {
+  border-color: var(--accent-copper);
+}
+
+.bg-bastion-accent-copper\/10 {
+  background-color: rgba(198, 107, 61, 0.1);
+}
+
+.border-bastion-accent-teal\/60 {
+  border-color: rgba(31, 168, 154, 0.6);
+}
+
+.bastion-surface {
+  border: 1px solid var(--line-soft);
+  background: linear-gradient(170deg, rgba(22, 40, 49, 0.92), rgba(15, 31, 38, 0.82));
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+}
+
+.bastion-nav {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.bastion-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border-radius: 0.85rem;
+  border: 1px solid var(--line-soft);
+  background: rgba(27, 47, 56, 0.35);
+  color: var(--text-mid);
+  padding: 0.65rem 0.7rem;
+  font-size: 0.8rem;
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.bastion-nav-btn:hover {
+  border-color: rgba(31, 168, 154, 0.5);
+  color: var(--text-high);
+}
+
+.bastion-nav-btn.is-active {
+  border-color: rgba(198, 107, 61, 0.7);
+  background: rgba(198, 107, 61, 0.14);
+  color: var(--text-high);
+}
+
+.bastion-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  color: var(--text-mid);
+  font-size: 0.8rem;
+}
+
+.bastion-input,
+.bastion-select {
+  border-radius: 0.75rem;
+  border: 1px solid var(--line-soft);
+  background: rgba(11, 24, 30, 0.82);
+  color: var(--text-high);
+  padding: 0.62rem 0.75rem;
+  font-size: 0.88rem;
+  outline: none;
+}
+
+.bastion-input:focus,
+.bastion-select:focus {
+  border-color: rgba(31, 168, 154, 0.75);
+  box-shadow: 0 0 0 2px rgba(31, 168, 154, 0.22);
+}
+
+.bastion-primary-btn,
+.bastion-outline-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 0.92rem;
+  border-radius: 0.75rem;
+  border: 1px solid transparent;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.bastion-primary-btn {
+  border-color: rgba(198, 107, 61, 0.75);
+  background: linear-gradient(120deg, rgba(198, 107, 61, 0.24), rgba(173, 84, 42, 0.36));
+  color: var(--text-high);
+}
+
+.bastion-primary-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+
+.bastion-outline-btn {
+  border-color: var(--line-soft);
+  background: rgba(14, 27, 33, 0.72);
+  color: var(--text-mid);
+}
+
+.bastion-outline-btn:hover {
+  border-color: rgba(31, 168, 154, 0.6);
+  color: var(--text-high);
+}
+
+.bastion-chip {
+  border-color: rgba(201, 222, 214, 0.18);
+  background: rgba(18, 33, 40, 0.8);
+}
+
+.bastion-chip-danger {
+  border-color: rgba(217, 56, 44, 0.5);
+  background: rgba(217, 56, 44, 0.12);
+}
+
+.bastion-status-chip.is-danger {
+  border-color: rgba(217, 56, 44, 0.5);
+  background: rgba(217, 56, 44, 0.12);
+  color: #ff8b82;
+}
+
+.bastion-status-chip.is-secure {
+  border-color: rgba(31, 168, 154, 0.55);
+  background: rgba(31, 168, 154, 0.12);
+  color: var(--accent-teal);
+}
+
+.bastion-dot-danger {
+  background-color: var(--danger-red);
+}
+
+.bastion-dot-secure {
+  background-color: var(--accent-teal);
+}
+
+.bastion-metric-pill {
+  border-color: var(--line-soft);
+  background: rgba(15, 28, 35, 0.78);
+}
+
+.bastion-toolbar {
+  align-self: flex-start;
+}
+
 /* Responsive */
 @media (min-width: 640px) {
   .sm\:inline {
@@ -1476,6 +1675,10 @@ table {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
+  .lg\:grid-cols-5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
   .lg\:grid-cols-6 {
     grid-template-columns: repeat(6, minmax(0, 1fr));
   }
@@ -1487,11 +1690,31 @@ table {
   .lg\:grid-cols-8 {
     grid-template-columns: repeat(8, minmax(0, 1fr));
   }
+
+  .lg\:col-span-2 {
+    grid-column: span 2 / span 2;
+  }
+
+  .lg\:col-span-3 {
+    grid-column: span 3 / span 3;
+  }
 }
 
 @media (min-width: 1280px) {
   .xl\:grid-cols-8 {
     grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+
+  .xl\:grid-cols-5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .xl\:col-span-2 {
+    grid-column: span 2 / span 2;
+  }
+
+  .xl\:col-span-3 {
+    grid-column: span 3 / span 3;
   }
 }
 
@@ -1502,6 +1725,10 @@ table {
 
   .h-400 {
     height: 320px;
+  }
+
+  .bastion-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

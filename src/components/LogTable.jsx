@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useI18n } from '../i18n/I18nProvider';
 
 const formatTime = (timestamp) => {
   if (!timestamp) return '--:--:--';
@@ -15,6 +16,7 @@ const getStatusBadgeClasses = (status) => {
 };
 
 export const LogTable = ({ logs = [] }) => {
+  const { t } = useI18n();
   const [typeFilter, setTypeFilter] = useState('all');
   const [search, setSearch] = useState('');
 
@@ -45,17 +47,17 @@ export const LogTable = ({ logs = [] }) => {
   return (
     <div className="glass-panel p-6 h-400 flex flex-col">
       <div className="mb-3 flex items-center gap-2">
-        <h2 className="text-xl font-bold text-white">Traffic Logs</h2>
+        <h2 className="text-xl font-bold text-white">{t('dashboard.logs.title')}</h2>
         <span className="ml-auto text-xs text-gray-500">{visibleLogs.length} visible</span>
       </div>
 
       <div className="mb-3 flex flex-wrap gap-2">
         {[
-          ['all', 'All'],
-          ['attack', 'Attack'],
-          ['blocked', 'Blocked'],
-          ['failed', 'Failed'],
-          ['success', 'Success'],
+          ['all', t('dashboard.logs.filters.all')],
+          ['attack', t('dashboard.logs.filters.attack')],
+          ['blocked', t('dashboard.logs.filters.blocked')],
+          ['failed', t('dashboard.logs.filters.failed')],
+          ['success', t('dashboard.logs.filters.success')],
         ].map(([id, label]) => (
           <button
             key={id}
@@ -79,24 +81,24 @@ export const LogTable = ({ logs = [] }) => {
           value={search}
           onChange={(event) => setSearch(event.target.value)}
           className="w-full rounded-lg border border-gray-700/50 bg-gray-900/50 px-3 py-2 text-xs text-gray-300 log-filter-input"
-          placeholder="Filter logs by IP, path, message, type, or status..."
-          aria-label="Filter logs"
+          placeholder={t('dashboard.logs.searchPlaceholder')}
+          aria-label={t('dashboard.logs.searchLabel')}
         />
       </div>
 
       <div className="flex-1 min-h-0 overflow-auto custom-scrollbar">
         {visibleLogs.length === 0 ? (
-          <div className="text-center text-gray-600 mt-10">No traffic detected</div>
+          <div className="text-center text-gray-600 mt-10">{t('common.states.noData')}</div>
         ) : (
           <table className="w-full text-left border-collapse log-table" style={{ minWidth: '860px' }}>
             <thead className="sticky top-0 bg-gray-900 z-10">
               <tr className="text-gray-500 text-xs border-b border-gray-800">
-                <th className="pb-2 pl-2">Time</th>
-                <th className="pb-2">Type</th>
-                <th className="pb-2">IP Address</th>
-                <th className="pb-2">Path</th>
-                <th className="pb-2">Status</th>
-                <th className="pb-2">Message</th>
+                <th className="pb-2 pl-2">{t('dashboard.logs.columns.time')}</th>
+                <th className="pb-2">{t('dashboard.logs.columns.type')}</th>
+                <th className="pb-2">{t('dashboard.logs.columns.ip')}</th>
+                <th className="pb-2">{t('dashboard.logs.columns.path')}</th>
+                <th className="pb-2">{t('dashboard.logs.columns.status')}</th>
+                <th className="pb-2">{t('dashboard.logs.columns.message')}</th>
               </tr>
             </thead>
             <tbody className="text-sm font-mono">

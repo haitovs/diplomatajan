@@ -1,0 +1,49 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bastion-web
+    ports:
+      - "4050:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: bastion-api
+    ports:
+      - "4051:4051"
+    environment:
+      PORT: 4051
+      JWT_SECRET: bastion-dev-secret
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/bastion
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16
+    container_name: bastion-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bastion
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: bastion-redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:

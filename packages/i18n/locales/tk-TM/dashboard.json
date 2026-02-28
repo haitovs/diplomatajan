@@ -1,0 +1,65 @@
+{
+  "title": "Iş giňişligi paneli",
+  "subtitle": "Janly telemetriýa we jogap ýagdaýy",
+  "sessionTotals": "Sessiýa jemleri",
+  "liveDetection": "Janly anyklama",
+  "responseOps": "Jogap amallary",
+  "stats": {
+    "totalRequests": "Jemi soraglar",
+    "blocked": "Böwetlenen",
+    "failedAuth": "Şowsuz awtorizasiýa",
+    "successful": "Üstünlikli",
+    "bannedIps": "Gadagan IP-ler",
+    "lockedAccounts": "Gulplanan hasaplar",
+    "peakRps": "Iň ýokary RPS",
+    "attackDuration": "Hüjümiň dowamlylygy"
+  },
+  "telemetry": {
+    "rps": "RPS",
+    "blockedPerSec": "Böwetlenen/s",
+    "failedPerSec": "Şowsuz/s"
+  },
+  "defenseStats": {
+    "title": "Gorag statistikasy",
+    "rateLimited": "Çäklenen tizlik",
+    "ipBans": "IP gadaganlary",
+    "lockouts": "Gulplamalar",
+    "captchas": "CAPTCHA-lar",
+    "geoBlocks": "Geo-böwetler",
+    "honeypots": "Duzaqlar",
+    "botBlocks": "Bot böwetleri"
+  },
+  "logs": {
+    "title": "Trafik ýazgylary",
+    "filters": {
+      "all": "Hemmesi",
+      "attack": "Hüjüm",
+      "blocked": "Böwetlenen",
+      "failed": "Şowsuz",
+      "success": "Üstünlikli"
+    },
+    "searchLabel": "Ýazgylary süzgüçlemek",
+    "searchPlaceholder": "IP, ýol, habar, görnüş ýa-da status boýunça süzgüçle...",
+    "columns": {
+      "time": "Wagt",
+      "type": "Görnüş",
+      "ip": "IP Salgy",
+      "path": "Ýol",
+      "status": "Status",
+      "message": "Habar"
+    }
+  },
+  "map": {
+    "title": "Hüjümiň çeşme kartasy",
+    "allTypes": "Ähli görnüşler",
+    "focusLiveType": "Janly görnüşe geç",
+    "empty": "Saýlanan wagtda soňky hüjüm çeşmesi ýok",
+    "code": "Kod",
+    "originZones": "çeşme zolagy",
+    "matchingRequests": "gabat gelen sorag",
+    "attacksInWindow": "penjiräniň içindäki hüjümler",
+    "targetServer": "Nyşan serweri",
+    "mediumSource": "Orta çeşme göwrümi",
+    "highSource": "Ýokary çeşme göwrümi"
+  }
+}

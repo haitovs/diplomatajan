@@ -3,11 +3,23 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "workspaces": [
+    "apps/*",
+    "workers/*",
+    "packages/*"
+  ],
   "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite",
+    "dev:web": "vite",
+    "dev:api": "npm run -w apps/api dev",
+    "dev:worker": "npm run -w workers/sim-runner dev",
+    "dev:all": "concurrently \"npm run dev:web\" \"npm run dev:api\" \"npm run dev:worker\"",
     "build": "vite build",
+    "build:api": "npm run -w apps/api build",
+    "build:worker": "npm run -w workers/sim-runner build",
     "lint": "eslint .",
+    "check:i18n": "node packages/i18n/scripts/check-completeness.mjs",
     "preview": "vite preview",
     "electron:build": "npm run build && electron-builder"
   },

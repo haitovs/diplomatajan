@@ -1,0 +1,45 @@
+{
+  "title": "Ssenariý düzüji",
+  "subtitle": "Amaly hüjüm-gorag synaglaryny düzüp işlediň",
+  "fields": {
+    "name": "Ssenariý ady",
+    "attackType": "Hüjüm görnüşi",
+    "intensity": "Güýç",
+    "targetSurface": "Nyşan üstü",
+    "businessProfile": "Biznes profili"
+  },
+  "attackType": {
+    "dictionary": "Sözlük hüjümi",
+    "credential_stuffing": "Maglumat doldurma hüjümi",
+    "password_spray": "Parol sepmek hüjümi",
+    "distributed": "Paýlanan hüjüm",
+    "reverse_brute": "Ters brute-force"
+  },
+  "targetSurface": {
+    "login": "Login",
+    "api": "API",
+    "mixed": "Garyşyk"
+  },
+  "businessProfile": {
+    "retail": "Söwda",
+    "fintech": "Fintech",
+    "education": "Bilim",
+    "saas": "SaaS"
+  },
+  "actions": {
+    "saveScenario": "Ssenariýi ýatda sakla",
+    "runScenario": "Ssenariýi işled",
+    "newScenario": "Täze ssenariý"
+  },
+  "saved": {
+    "title": "Ýatda saklanan ssenariýler",
+    "empty": "Häzirlikçe ssenariý ýok"
+  },
+  "risk": {
+    "title": "Çaklanylýan töwekgelçilik",
+    "low": "Pes",
+    "medium": "Orta",
+    "high": "Ýokary",
+    "critical": "Kritiki"
+  }
+}

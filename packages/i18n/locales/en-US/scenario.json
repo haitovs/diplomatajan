@@ -1,0 +1,45 @@
+{
+  "title": "Scenario Composer",
+  "subtitle": "Build and run practical attack-defense simulations",
+  "fields": {
+    "name": "Scenario Name",
+    "attackType": "Attack Type",
+    "intensity": "Intensity",
+    "targetSurface": "Target Surface",
+    "businessProfile": "Business Profile"
+  },
+  "attackType": {
+    "dictionary": "Dictionary Attack",
+    "credential_stuffing": "Credential Stuffing",
+    "password_spray": "Password Spraying",
+    "distributed": "Distributed Attack",
+    "reverse_brute": "Reverse Brute Force"
+  },
+  "targetSurface": {
+    "login": "Login",
+    "api": "API",
+    "mixed": "Mixed"
+  },
+  "businessProfile": {
+    "retail": "Retail",
+    "fintech": "Fintech",
+    "education": "Education",
+    "saas": "SaaS"
+  },
+  "actions": {
+    "saveScenario": "Save Scenario",
+    "runScenario": "Run Scenario",
+    "newScenario": "New Scenario"
+  },
+  "saved": {
+    "title": "Saved Scenarios",
+    "empty": "No scenarios saved yet"
+  },
+  "risk": {
+    "title": "Estimated Risk Profile",
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "critical": "Critical"
+  }
+}

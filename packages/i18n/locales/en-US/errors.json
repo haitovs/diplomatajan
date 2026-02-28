@@ -1,0 +1,5 @@
+{
+  "missingScenarioName": "Scenario name is required",
+  "missingSnapshots": "Create both baseline and hardened snapshots first",
+  "generic": "Something went wrong"
+}

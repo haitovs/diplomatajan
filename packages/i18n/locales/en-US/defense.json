@@ -1,0 +1,40 @@
+{
+  "title": "Defense Lab",
+  "subtitle": "Tune controls and measure defensive impact",
+  "summary": {
+    "activeDefenses": "Active Defenses",
+    "gaps": "Gaps",
+    "nominalRps": "Nominal RPS"
+  },
+  "actions": {
+    "generateRecommendations": "Generate Recommendations",
+    "applyPresetBalanced": "Apply Balanced Preset",
+    "applyPresetStrict": "Apply Strict Preset"
+  },
+  "recommendations": {
+    "title": "Prioritized Recommendations",
+    "empty": "Run simulation to generate recommendations",
+    "severity": "Severity",
+    "effort": "Effort",
+    "impact": "Expected Risk Drop"
+  },
+  "effort": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High"
+  },
+  "severity": {
+    "critical": "Critical",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
+  },
+  "actionKeys": {
+    "enable_rate_limit": "Enable and tune rate limiting per source IP.",
+    "enable_ip_blacklist": "Enable automatic IP blacklisting for repeated violations.",
+    "enable_account_lockout": "Enable account lockout after repeated failed logins.",
+    "enable_behavioral": "Enable behavioral anomaly detection for bot-like activity.",
+    "enable_geo_blocking": "Block high-risk geographies not used by your business.",
+    "tighten_intensity_controls": "Reduce accepted login throughput and add progressive delay."
+  }
+}

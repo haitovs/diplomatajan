@@ -1,0 +1,65 @@
+{
+  "title": "Workspace Dashboard",
+  "subtitle": "Live telemetry and response posture",
+  "sessionTotals": "Session Totals",
+  "liveDetection": "Live Detection",
+  "responseOps": "Response Operations",
+  "stats": {
+    "totalRequests": "Total Requests",
+    "blocked": "Blocked",
+    "failedAuth": "Failed Auth",
+    "successful": "Successful",
+    "bannedIps": "Banned IPs",
+    "lockedAccounts": "Locked Accounts",
+    "peakRps": "Peak RPS",
+    "attackDuration": "Attack Duration"
+  },
+  "telemetry": {
+    "rps": "RPS",
+    "blockedPerSec": "Blocked/s",
+    "failedPerSec": "Failed/s"
+  },
+  "defenseStats": {
+    "title": "Defense Statistics",
+    "rateLimited": "Rate Limited",
+    "ipBans": "IP Bans",
+    "lockouts": "Lockouts",
+    "captchas": "CAPTCHAs",
+    "geoBlocks": "Geo-Blocks",
+    "honeypots": "Honeypots",
+    "botBlocks": "Bot Blocks"
+  },
+  "logs": {
+    "title": "Traffic Logs",
+    "filters": {
+      "all": "All",
+      "attack": "Attack",
+      "blocked": "Blocked",
+      "failed": "Failed",
+      "success": "Success"
+    },
+    "searchLabel": "Filter logs",
+    "searchPlaceholder": "Filter logs by IP, path, message, type, or status...",
+    "columns": {
+      "time": "Time",
+      "type": "Type",
+      "ip": "IP Address",
+      "path": "Path",
+      "status": "Status",
+      "message": "Message"
+    }
+  },
+  "map": {
+    "title": "Attack Origin Map",
+    "allTypes": "All Types",
+    "focusLiveType": "Focus Live Type",
+    "empty": "No recent attack origins in selected time window",
+    "code": "Code",
+    "originZones": "origin zones",
+    "matchingRequests": "matching requests",
+    "attacksInWindow": "attacks in window",
+    "targetServer": "Target server",
+    "mediumSource": "Medium source volume",
+    "highSource": "High source volume"
+  }
+}

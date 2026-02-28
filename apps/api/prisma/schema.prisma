@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id         String      @id @default(cuid())
+  name       String
+  createdAt  DateTime    @default(now())
+  workspaces Workspace[]
+}
+
+model Workspace {
+  id             String      @id @default(cuid())
+  name           String
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  scenarios      Scenario[]
+  runs           Run[]
+  createdAt      DateTime    @default(now())
+}
+
+model Scenario {
+  id          String   @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id])
+  name        String
+  payload     Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Run {
+  id          String   @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id])
+  scenarioId  String
+  status      String
+  payload     Json
+  startedAt   DateTime @default(now())
+  endedAt     DateTime?
+}

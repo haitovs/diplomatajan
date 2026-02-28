@@ -1,0 +1,30 @@
+{
+  "name": "@bastion/api",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "node dist/server.js",
+    "build": "tsc -p tsconfig.json",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.0.1",
+    "@fastify/jwt": "^10.0.0",
+    "fastify": "^5.0.0",
+    "ws": "^8.18.0",
+    "zod": "^3.25.76",
+    "bullmq": "^5.63.0",
+    "ioredis": "^5.8.1",
+    "prisma": "^6.16.3",
+    "@prisma/client": "^6.16.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.7",
+    "@types/ws": "^8.18.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}

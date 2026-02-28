@@ -1,0 +1,22 @@
+{
+  "title": "Hasabatlar",
+  "subtitle": "Amaly, iki dilli ýerine ýetiriş hasabatlaryny eksport ediň",
+  "actions": {
+    "exportTk": "Türkmençe eksport",
+    "exportEn": "Iňlisçe eksport",
+    "exportBoth": "Iki dilli eksport"
+  },
+  "sections": {
+    "overview": "Syn",
+    "comparison": "Başlangyç vs Güýçlendirilen",
+    "recommendations": "Maslahatlar",
+    "nextSteps": "Indiki ädimler"
+  },
+  "labels": {
+    "generatedAt": "Döredilen wagty",
+    "scenario": "Ssenariý",
+    "baseline": "Başlangyç",
+    "hardened": "Güýçlendirilen"
+  },
+  "empty": "Hasabat eksport etmek üçin snapshot-lary we maslahatlary dörediň"
+}

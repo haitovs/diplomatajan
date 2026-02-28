@@ -1,67 +1,121 @@
-# Brute-Force Attack Simulation & Defense
+# Bastion Twin: SME Cyber Defense Planner (Turkmen-First)
 
-This application visualizes a Brute-Force attack on a server and demonstrates how security measures like Rate Limiting and IP Blocking (WAF) can mitigate it.
+Bastion Twin is a practical cyber-defense planning app for SME security teams.
+It extends the existing brute-force simulator into an interactive decision platform with:
 
-## Features
+- Scenario Composer (attack + business context)
+- Live Workspace Dashboard (real-time telemetry)
+- Defense Lab (interactive control tuning)
+- Baseline vs Hardened comparison snapshots
+- Bilingual report export (`tk-TM`, `en-US`)
+- Turkmen-first localization with locale completeness checks
 
-- **Real-time Dashboard**: View total requests, blocked attempts, and failed logins.
-- **Traffic Visualization**: Live chart showing Requests Per Second (RPS).
-- **Live Logs**: Watch traffic come in with status codes (200 OK, 401 Unauthorized, 429 Too Many Requests).
-- **Simulation Control**:
-  - **Simulate Attack**: Toggle a brute-force attack simulation.
-  - **Attack Intensity**: Adjust the volume of the attack.
-  - **Active Defense (WAF)**: Enable/Disable the firewall to see the difference.
+## What was implemented
 
-## Tech Stack
+### Frontend (active in this repository)
+- Upgraded app to multi-view Bastion Twin workflow:
+  - `Workspace Dashboard`
+  - `Scenario Composer`
+  - `Defense Lab`
+  - `Comparison View`
+  - `Reports`
+- Added custom Bastion Atlas design system (tokens + shape language + motion)
+- Added localization provider with `tk-TM` default and language switcher
+- Added persisted scenarios (local storage)
+- Added baseline/hardened snapshots and comparison charts
+- Added recommendation generation engine
+- Added report exporter for `tk`, `en`, and `both` modes
 
-- **React (Vite)**: Fast and modern frontend.
-- **Recharts**: For the traffic chart.
-- **Framer Motion**: For smooth animations.
-- **Lucide React**: For icons.
-- **Vanilla CSS**: Custom glassmorphism design.
+### Monorepo architecture scaffold
+- `apps/api` (Fastify + WS + Prisma/BullMQ ready)
+- `apps/web` (workspace package metadata)
+- `workers/sim-runner` (BullMQ worker skeleton)
+- `packages/sim-core` (shared simulation engine)
+- `packages/contracts` (shared domain contracts)
+- `packages/i18n` (locale dictionaries + completeness checker)
 
-## How to Run
+## Repository layout
 
-1.  Install dependencies:
-    ```bash
-    npm install
-    ```
-2.  Start the development server:
-    ```bash
-    npm run dev
-    ```
-3.  Open [http://localhost:5173](http://localhost:5173) in your browser.
+- `apps/api` - API service scaffold with required endpoints
+- `apps/web` - web workspace package metadata
+- `workers/sim-runner` - async simulation worker scaffold
+- `packages/sim-core` - shared simulation logic package
+- `packages/contracts` - shared TypeScript contracts
+- `packages/i18n` - locale dictionaries and CI i18n checks
+- `src` - active Vite frontend implementation for Bastion Twin
 
-## Server Deployment (Docker)
+## API endpoints scaffolded
 
-This project includes the same deployment style as `agabek-crack-with-hashcat`:
-- Multi-stage Docker build
-- Nginx for static SPA hosting
-- Docker Compose for container management
+The API service (`apps/api/src/server.ts`) includes implementations for:
 
-Production settings in this repo:
-- Domain: `atajan.raxa2.store`
-- Host port: `4050`
-- Container port: `80`
+1. `POST /api/v1/scenarios`
+2. `GET /api/v1/scenarios/:id`
+3. `POST /api/v1/runs`
+4. `POST /api/v1/runs/:id/stop`
+5. `GET /api/v1/runs/:id`
+6. `GET /api/v1/runs/:id/events` (WebSocket upgrade path)
+7. `POST /api/v1/runs/:id/recommendations`
+8. `POST /api/v1/reports/:runId/export?lang=tk|en|both`
 
-### Run on server
+## Localization
+
+Locale files:
+
+- `packages/i18n/locales/tk-TM/*.json`
+- `packages/i18n/locales/en-US/*.json`
+
+Namespaces included:
+
+- `common`
+- `dashboard`
+- `scenario`
+- `defense`
+- `report`
+- `errors`
+
+Run locale completeness check:
 
 ```bash
-docker compose up -d --build
+npm run check:i18n
 ```
 
-### Check status
+## Run (frontend)
 
 ```bash
-docker compose ps
+npm install
+npm run dev
 ```
 
-### Open app
+Open: `http://localhost:5173`
 
-`http://YOUR_SERVER_IP:4050`
+## Validate frontend
 
-## How to Use
+```bash
+npm run lint
+npm run build
+npm run check:i18n
+```
 
-1.  **Start the App**: You'll see normal background traffic.
-2.  **Launch Attack**: Toggle "Simulate Attack" in the Control Panel. Watch the "Failed Logins" and RPS spike.
-3.  **Enable Defense**: Toggle "Active Defense (WAF)". Watch as the system starts returning `429` (Rate Limit) and eventually blocks the attacking IPs, reducing the load.
+## Full-stack scaffold (compose)
+
+A full-stack compose definition is included:
+
+- `docker-compose.fullstack.yml`
+
+It wires:
+- web
+- api
+- postgres
+- redis
+
+Run:
+
+```bash
+docker compose -f docker-compose.fullstack.yml up -d --build
+```
+
+## Notes
+
+- The active, tested runtime in this repo is the frontend app (`src/*`).
+- Backend and worker layers are implemented as architecture-aligned scaffolds and require dependency installation for execution.
+- The existing legacy/electron paths were preserved.

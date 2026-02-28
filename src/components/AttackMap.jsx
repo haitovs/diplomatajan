@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useI18n } from '../i18n/I18nProvider';
 
 const VIEWBOX = { width: 960, height: 480 };
 
@@ -89,6 +90,7 @@ export const AttackMap = ({
   windowMs = 90_000,
   activeAttackTypeId = null,
 }) => {
+  const { t } = useI18n();
   const [hoveredOrigin, setHoveredOrigin] = useState(null);
   const [typeFilter, setTypeFilter] = useState('all');
   const [resultFilter, setResultFilter] = useState('all');
@@ -206,13 +208,13 @@ export const AttackMap = ({
   return (
     <div className="glass-panel p-4">
       <div className="mb-3 flex items-center gap-2">
-        <h3 className="text-sm font-medium text-gray-400">Attack Origin Map</h3>
+        <h3 className="text-sm font-medium text-gray-400">{t('dashboard.map.title')}</h3>
         {isUnderAttack && (
           <span className="rounded-full bg-red-500/20 px-2 py-0.5 text-xs text-red-400 animate-pulse">
-            ACTIVE
+            {t('common.labels.active')}
           </span>
         )}
-        <span className="ml-auto text-xs text-gray-500">Window {Math.round(resolvedWindowMs / 1000)}s</span>
+        <span className="ml-auto text-xs text-gray-500">{t('common.labels.window')} {Math.round(resolvedWindowMs / 1000)}s</span>
       </div>
 
       <div className="mb-2 flex flex-wrap gap-2">
@@ -226,7 +228,7 @@ export const AttackMap = ({
           }`}
           onClick={() => setTypeFilter('all')}
         >
-          All Types
+          {t('dashboard.map.allTypes')}
         </button>
         {availableAttackTypes.map((type) => (
           <button
@@ -267,7 +269,7 @@ export const AttackMap = ({
             className="rounded-full border border-blue-500/30 bg-blue-500/10 px-2 py-1 text-xs text-blue-500 transition-colors hover:border-gray-500"
             onClick={() => setTypeFilter(activeAttackTypeId)}
           >
-            Focus Live Type
+            {t('dashboard.map.focusLiveType')}
           </button>
         )}
       </div>
@@ -351,38 +353,38 @@ export const AttackMap = ({
 
         {origins.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center text-xs text-gray-500">
-            No recent attack origins in selected time window
+            {t('dashboard.map.empty')}
           </div>
         )}
 
         {canShowHoveredOrigin && (
           <div className="absolute top-2 right-2 rounded-lg border border-gray-700/50 bg-gray-900/95 p-2 text-xs">
             <div className="font-bold text-white">{hoveredOrigin.name}</div>
-            <div className="text-gray-400">Code: {hoveredOrigin.country}</div>
-            <div className="text-gray-400">Requests: {hoveredOrigin.count}</div>
+            <div className="text-gray-400">{t('dashboard.map.code')}: {hoveredOrigin.country}</div>
+            <div className="text-gray-400">{t('dashboard.stats.totalRequests')}: {hoveredOrigin.count}</div>
             <div className="text-gray-500">{`${hoveredOrigin.lat.toFixed(2)}, ${hoveredOrigin.lon.toFixed(2)}`}</div>
           </div>
         )}
       </div>
 
       <div className="mt-3 flex items-center gap-4 text-xs text-gray-400">
-        <span>{origins.length} origin zones</span>
-        <span>{activeRequests} matching requests</span>
-        <span>{totalRequests} attacks in window</span>
+        <span>{origins.length} {t('dashboard.map.originZones')}</span>
+        <span>{activeRequests} {t('dashboard.map.matchingRequests')}</span>
+        <span>{totalRequests} {t('dashboard.map.attacksInWindow')}</span>
       </div>
 
       <div className="mt-2 flex items-center gap-4 text-xs text-gray-500">
         <div className="flex items-center gap-1">
           <div className="w-2 h-2 rounded-full bg-green-500" />
-          <span>Target server</span>
+          <span>{t('dashboard.map.targetServer')}</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-2 h-2 rounded-full bg-yellow-500" />
-          <span>Medium source volume</span>
+          <span>{t('dashboard.map.mediumSource')}</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-2 h-2 rounded-full bg-red-500" />
-          <span>High source volume</span>
+          <span>{t('dashboard.map.highSource')}</span>
         </div>
       </div>
 

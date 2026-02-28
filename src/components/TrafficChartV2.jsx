@@ -1,4 +1,5 @@
 import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { useI18n } from '../i18n/I18nProvider';
 
 /**
  * Enhanced Traffic Chart with multiple data series
@@ -10,14 +11,15 @@ export const TrafficChartV2 = ({
   windowSeconds = 90,
   isUnderAttack = false,
 }) => {
+  const { t } = useI18n();
   const latest = data[data.length - 1] || { rps: 0, blocked: 0, failed: 0 };
 
   return (
     <div className="glass-panel p-6 h-300 flex flex-col">
       <div className="mb-4 flex items-center justify-between gap-2">
         <div>
-          <h2 className="text-xl font-bold text-white">Network Traffic</h2>
-          <p className="text-xs text-gray-500">Per-second telemetry across the selected observation window</p>
+          <h2 className="text-xl font-bold text-white">{t('dashboard.liveDetection')}</h2>
+          <p className="text-xs text-gray-500">{t('dashboard.subtitle')}</p>
         </div>
         <span
           className={`rounded-full border px-2 py-1 text-xs ${
@@ -32,15 +34,15 @@ export const TrafficChartV2 = ({
 
       <div className="flex gap-2 mb-4">
         <div className="flex-1 rounded-lg border border-gray-700/50 bg-gray-900/50 p-2">
-          <div className="text-xs text-gray-500">RPS</div>
+          <div className="text-xs text-gray-500">{t('dashboard.telemetry.rps')}</div>
           <div className="text-sm font-bold text-white">{latest.rps}</div>
         </div>
         <div className="flex-1 rounded-lg border border-gray-700/50 bg-gray-900/50 p-2">
-          <div className="text-xs text-gray-500">Blocked/s</div>
+          <div className="text-xs text-gray-500">{t('dashboard.telemetry.blockedPerSec')}</div>
           <div className="text-sm font-bold text-red-400">{latest.blocked}</div>
         </div>
         <div className="flex-1 rounded-lg border border-gray-700/50 bg-gray-900/50 p-2">
-          <div className="text-xs text-gray-500">Failed/s</div>
+          <div className="text-xs text-gray-500">{t('dashboard.telemetry.failedPerSec')}</div>
           <div className="text-sm font-bold text-yellow-400">{latest.failed}</div>
         </div>
       </div>
@@ -92,10 +94,10 @@ export const TrafficChartV2 = ({
             />
             
             <Area 
-              type="monotone" 
-              dataKey="rps" 
-              name="Requests/sec"
-              stroke="#00b8ff" 
+                type="monotone" 
+                dataKey="rps" 
+                name={t('dashboard.telemetry.rps')}
+                stroke="#00b8ff" 
               strokeWidth={2}
               fillOpacity={1}
               fill="url(#colorRps)"
@@ -105,7 +107,7 @@ export const TrafficChartV2 = ({
               <Area 
                 type="monotone" 
                 dataKey="blocked" 
-                name="Blocked/sec"
+                name={t('dashboard.telemetry.blockedPerSec')}
                 stroke="#ef4444" 
                 strokeWidth={2}
                 fillOpacity={1}
@@ -117,7 +119,7 @@ export const TrafficChartV2 = ({
               <Area 
                 type="monotone" 
                 dataKey="failed" 
-                name="Failed Auth/sec"
+                name={t('dashboard.telemetry.failedPerSec')}
                 stroke="#f59e0b" 
                 strokeWidth={2}
                 fillOpacity={1}
@@ -129,7 +131,7 @@ export const TrafficChartV2 = ({
 
         {data.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center text-xs text-gray-500">
-            Waiting for traffic data...
+            {t('common.states.noData')}
           </div>
         )}
       </div>
@@ -138,15 +140,15 @@ export const TrafficChartV2 = ({
       <div className="flex gap-4 mt-4 justify-center">
         <div className="flex items-center gap-2 text-xs">
           <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#00b8ff' }} />
-          <span className="text-gray-400">Total RPS</span>
+          <span className="text-gray-400">{t('dashboard.telemetry.rps')}</span>
         </div>
         <div className="flex items-center gap-2 text-xs">
           <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#ef4444' }} />
-          <span className="text-gray-400">Blocked</span>
+          <span className="text-gray-400">{t('dashboard.stats.blocked')}</span>
         </div>
         <div className="flex items-center gap-2 text-xs">
           <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#f59e0b' }} />
-          <span className="text-gray-400">Failed Auth</span>
+          <span className="text-gray-400">{t('dashboard.stats.failedAuth')}</span>
         </div>
       </div>
     </div>

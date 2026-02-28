@@ -1,0 +1,41 @@
+{
+  "appName": "Bastion Twin",
+  "tagline": "SME Cyber Defense Planner",
+  "language": "Language",
+  "languages": {
+    "tk-TM": "Turkmen",
+    "en-US": "English"
+  },
+  "navigation": {
+    "workspace": "Workspace Dashboard",
+    "scenario": "Scenario Composer",
+    "defense": "Defense Lab",
+    "comparison": "Comparison View",
+    "reports": "Reports"
+  },
+  "actions": {
+    "start": "Start Run",
+    "stop": "Stop Run",
+    "reset": "Reset",
+    "save": "Save",
+    "apply": "Apply",
+    "export": "Export",
+    "generate": "Generate",
+    "snapshotBaseline": "Save Baseline",
+    "snapshotHardened": "Save Hardened"
+  },
+  "states": {
+    "running": "Running",
+    "stopped": "Stopped",
+    "underAttack": "Under Attack",
+    "secure": "System Secure",
+    "noData": "No data available"
+  },
+  "labels": {
+    "window": "Window",
+    "active": "Active",
+    "inactive": "Inactive",
+    "estimated": "Estimated",
+    "risk": "Risk"
+  }
+}

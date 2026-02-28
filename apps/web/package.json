@@ -1,0 +1,24 @@
+{
+  "name": "@bastion/web",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "framer-motion": "^12.23.25",
+    "lucide-react": "^0.555.0",
+    "recharts": "^3.5.1",
+    "i18next": "^25.5.3",
+    "react-i18next": "^15.7.2",
+    "i18next-icu": "^2.4.1",
+    "@tanstack/react-query": "^5.90.5",
+    "@tanstack/react-router": "^1.139.1",
+    "zustand": "^5.0.8"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "title": "Gorag laboratoriýasy",
+  "subtitle": "Dolandyryşlary sazlaň we gorag täsirini ölçäň",
+  "summary": {
+    "activeDefenses": "Işjeň goraglar",
+    "gaps": "Boşluklar",
+    "nominalRps": "Nominal RPS"
+  },
+  "actions": {
+    "generateRecommendations": "Maslahatlary döret",
+    "applyPresetBalanced": "Balansly şablony ulan",
+    "applyPresetStrict": "Gaty şablony ulan"
+  },
+  "recommendations": {
+    "title": "Ileri tutulýan maslahatlar",
+    "empty": "Maslahat döretmek üçin simulýasiýa işlediň",
+    "severity": "Dereje",
+    "effort": "Tagalla",
+    "impact": "Töwekgelçiligiň peselişi"
+  },
+  "effort": {
+    "low": "Pes",
+    "medium": "Orta",
+    "high": "Ýokary"
+  },
+  "severity": {
+    "critical": "Kritiki",
+    "high": "Ýokary",
+    "medium": "Orta",
+    "low": "Pes"
+  },
+  "actionKeys": {
+    "enable_rate_limit": "IP çeşmesine görä tizlik çäklendirmesini açyň we sazlaň.",
+    "enable_ip_blacklist": "Gaýtalanýan bozulmalarda awtomat IP gadaganyny açyň.",
+    "enable_account_lockout": "Yzygider şowsuz girişlerden soň hasap gulplamasyny açyň.",
+    "enable_behavioral": "Bot hereketini anyklamak üçin davranış analizini açyň.",
+    "enable_geo_blocking": "Biznesiňize degişli däl ýokary töwekgel ýurtlary böwetläň.",
+    "tighten_intensity_controls": "Login akymyny azaltmak we progresiw gijikdirme goşmak."
+  }
+}
