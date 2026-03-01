@@ -1,68 +1,97 @@
 {
   "title": "Bastion Twin nähili işleýär",
-  "subtitle": "Platformanyň iş tertibini, amaly peýdasyny we ulanmagyň iň gowy ýoluny öwreniň",
+  "subtitle": "Mugallym stilinde iş tertibi, peýdasy we düwmeleriň manysy",
   "overview": {
     "title": "Bu platforma näme",
-    "body": "Bastion Twin KOB toparlary üçin interaktiw kiber gorag meýilleşdiriş giňişligidir. Ol login/API hüjümlerini simulirleýär, gorag sazlamalaryny janly üýtgetmäge mümkinçilik berýär we netijeleri ýerine ýetirişe taýýar ädimlere öwürýär."
+    "body": "Bastion Twin KOB gurşawy üçin amaly kiber-gorag okuw meýdançasydyr. Siz gözegçilikli hüjüm simulýasiýasyny işledýärsiňiz, goragy howpsuz ýagdaýda synagdan geçirýärsiňiz we netijeleri ýerine ýetiriş ädimlerine öwürýärsiňiz."
   },
   "workflow": {
-    "title": "Nähili işleýär",
+    "title": "Nähili işleýär (Mugallym tertibi)",
     "steps": {
       "compose": {
         "title": "1. Ssenariý düzüň",
-        "body": "Hüjüm görnüşini, güýjüni, nyşan üstüni we biznes profilini saýlaň."
+        "body": "Hakyky gurşawyňyza gabat gelýän hüjüm görnüşini, güýjüni, nyşan üstüni we biznes profilini saýlaň."
       },
       "run": {
-        "title": "2. Janly simulýasiýa işlediň",
-        "body": "Ssenariýi başladyň we trafik, çeşme kartasy, töwekgelçilik derejesini yzarlayň."
+        "title": "2. Janly simulýasiýany işlediň",
+        "body": "Start basyň we trafik, şowsuz awtorizasiýa, böwet derejesi, çeşme kartasyny janly görüň."
       },
       "tune": {
         "title": "3. Goragy sazlaň",
-        "body": "Dolandyryşlary açyp/ýapyp howpsuzlyk KPI üýtgeşmelerini derrew görüň."
+        "body": "Command Center-de dolandyryşlary açyň we KPI üýtgemelerini derrew synlaň."
       },
       "compare": {
-        "title": "4. Başlangyç we güýçlendirilen ýagdaýy deňeşdiriň",
-        "body": "Snapshot alyň we güýçlendirmeden soň näme gowulaşandygyny ölçäň."
+        "title": "4. Başlangyç we güýçlendirilen snapshot alyň",
+        "body": "Sazlamadan öň başlangyç, sazlamadan soň güýçlendirilen snapshot alyň."
       },
       "report": {
         "title": "5. Hereket meýilnamasyny eksport ediň",
-        "body": "Iki dilli hasabatlary inženerçilik we ýolbaşçylyga paýlaşyň."
+        "body": "Inženerçilik, operasiýa we ýolbaşçylyga paýlaşmak üçin iki dilli hasabat dörediň."
       }
     }
   },
+  "attackLessons": {
+    "title": "Hüjüm görnüşleriniň düşündirişi",
+    "items": {
+      "dictionary": "Sözlük: bir-iki hasaba garşy köp umumy parol synalýar.",
+      "credential_stuffing": "Credential Stuffing: syzan account-password jübütleri köp mukdarda synalýar.",
+      "password_spray": "Password Spray: bir umumy parol köp hasaba garşy synalýar.",
+      "distributed": "Distributed: köp üýtgeýän IP arkaly botnet basyşy ýaly hereket.",
+      "reverse_brute": "Reverse Brute: bir parol kandidaty bilen köp username synagy."
+    }
+  },
+  "businessLessons": {
+    "title": "Biznes profilleriniň düşündirişi",
+    "items": {
+      "retail": "Söwda: möwsümleýin traffik böküşi we müşderi hasap dikeltme basyşy.",
+      "fintech": "Fintech: gaty gulplama, anomaliýa anyklama we compliance derejeli gorag.",
+      "education": "Bilim: ulanyjy görnüşi köp we parol gaýtadan ulanylyş töwekgelçiligi ýokary.",
+      "saas": "SaaS: login ygtybarlylygy bilen anti-awtomat goragy deňagramlaşdyrmak."
+    }
+  },
+  "commandLessons": {
+    "title": "Command Center düwmeleriniň manysy",
+    "items": {
+      "start": "Start Attack: simulirlenen zyýanly traffigi başlaýar.",
+      "stop": "Stop Attack: hüjüm traffigini derrew saklaýar.",
+      "intensity": "Intensity slider: hüjümiň basyş derejesini sazlaýar.",
+      "defenses": "Defense açarlary: her açar bir gorag strategiýasyny işjeňleşdirýär.",
+      "presets": "Balanced/Strict şablonlary: demo we synag üçin tiz syýasat ýygyndysy."
+    }
+  },
   "usefulness": {
-    "title": "Iň peýdaly bölümler",
+    "title": "Iň peýdaly ýerler",
     "items": {
       "risk": {
-        "title": "Töwekgelçiligiň görnükliligi",
-        "body": "Howpuň nireden gelýändigini we täsiriň derejesini anyk görüň."
+        "title": "Töwekgelçiligi görmek",
+        "body": "Howpuň basyşyny we gorag boşluklaryny anyk görüň."
       },
       "decision": {
         "title": "Karar ynamy",
-        "body": "Önümçilik syýasatlaryny üýtgetmezden öň gorag kombinasiýalaryny barlaň."
+        "body": "Önümçiligi üýtgetmezden öň syýasaty barlaň."
       },
       "roi": {
-        "title": "Ölçenýän netijelilik",
-        "body": "Howpsuzlyk maýa goýumlaryny sanly subutnama bilen esaslandyryň."
+        "title": "Ölçenýän netije",
+        "body": "Öň/soň ölçegleri bilen näme gowulandygyny subut ediň."
       },
       "alignment": {
         "title": "Topar sazlaşygy",
-        "body": "Ops, Security we ýolbaşçylygy bir hasabat arkaly bir manyda jemläň."
+        "body": "Ähli taraplar üçin bir düşnükli hasabat beriň."
       }
     }
   },
   "quickStart": {
     "title": "Bu saýty nähili ulanmaly (Tiz başlangyç)",
     "steps": {
-      "one": "Ssenariý düzüjide öz gurşawyňyz üçin bir ssenariý saklaň.",
-      "two": "Iş giňişliginde işledip başlangyç snapshot alyň.",
-      "three": "Gorag laboratoriýasyna geçip sazlamalary ulanyň we düzüň.",
-      "four": "Güýçlendirilen snapshot alyň we deňeşdirme görnüşinde serediň.",
-      "five": "Maslahatlary döredip tk/en hasabat eksport ediň."
+      "one": "Hakyky traffige ýakyn bir ssenariý dörediň.",
+      "two": "Simulýasiýany başladyň we başlangyç snapshot alyň.",
+      "three": "Gorag dolandyryşlaryny açyň we güýji sazlaň.",
+      "four": "Güýçlendirilen snapshot alyň we Deňeşdirme görnüşine geçiň.",
+      "five": "Maslahat dörediň we tk/en hasabat eksport ediň."
     }
   },
   "tips": {
-    "title": "Iň gowy tejribe",
-    "body": "Esasy ssenariýleriňizi her aý ýa-da login/syýasat üýtgeşmesinden soň täzeden işlediň. Wagtyň dowamynda ösüş trendini yzarlayň."
+    "title": "Mugallym maslahaty",
+    "body": "Bir ssenariýi her aý gaýtalaň. Bir gezeklik san däl-de, trend bilen baha beriň."
   }
 }

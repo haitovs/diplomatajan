@@ -6,7 +6,15 @@ const serializeRecommendation = (recommendation, t) =>
   `- ${t(`defense.actionKeys.${recommendation.actionKey}`)} (${t(`defense.severity.${recommendation.severity}`)}, ${recommendation.expectedRiskDropPct}%)`;
 const MotionSection = motion.section;
 
-export const ReportExporter = ({ scenario, baselineSnapshot, hardenedSnapshot, recommendations = [] }) => {
+export const ReportExporter = ({
+  scenario,
+  baselineSnapshot,
+  hardenedSnapshot,
+  recommendations = [],
+  onCaptureBaseline,
+  onCaptureHardened,
+  onGoWorkspace,
+}) => {
   const { t, formatDate } = useI18n();
 
   const canExport = scenario && baselineSnapshot && hardenedSnapshot;
@@ -60,8 +68,20 @@ export const ReportExporter = ({ scenario, baselineSnapshot, hardenedSnapshot, r
       <p className="text-sm text-bastion-text-mid mt-1">{t('report.subtitle')}</p>
 
       {!canExport && (
-        <div className="mt-4 rounded-xl border border-bastion-line bg-bastion-panel p-4 text-sm text-bastion-text-mid">
-          {t('report.empty')}
+        <div className="mt-4 rounded-xl border border-bastion-line bg-bastion-panel p-4">
+          <p className="text-sm text-bastion-text-mid">{t('report.empty')}</p>
+          <p className="mt-2 text-xs text-bastion-text-mid">{t('report.setupHelp')}</p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button type="button" className="bastion-outline-btn" onClick={onCaptureBaseline}>
+              {t('report.actions.captureBaseline')}
+            </button>
+            <button type="button" className="bastion-outline-btn" onClick={onCaptureHardened}>
+              {t('report.actions.captureHardened')}
+            </button>
+            <button type="button" className="bastion-primary-btn" onClick={onGoWorkspace}>
+              {t('report.actions.goWorkspace')}
+            </button>
+          </div>
         </div>
       )}
 

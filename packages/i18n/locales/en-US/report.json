@@ -1,10 +1,14 @@
 {
   "title": "Reports",
   "subtitle": "Export actionable bilingual implementation reports",
+  "setupHelp": "Reports require two snapshots: baseline and hardened.",
   "actions": {
     "exportTk": "Export Turkmen",
     "exportEn": "Export English",
-    "exportBoth": "Export Bilingual"
+    "exportBoth": "Export Bilingual",
+    "captureBaseline": "Capture Baseline Now",
+    "captureHardened": "Capture Hardened Now",
+    "goWorkspace": "Go To Workspace"
   },
   "sections": {
     "overview": "Overview",

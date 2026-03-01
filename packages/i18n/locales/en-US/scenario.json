@@ -15,10 +15,22 @@
     "distributed": "Distributed Attack",
     "reverse_brute": "Reverse Brute Force"
   },
+  "attackDescription": {
+    "dictionary": "Attacker tries many common passwords against one/few accounts. Fast and noisy.",
+    "credential_stuffing": "Uses leaked username/password pairs. More realistic and often higher success.",
+    "password_spray": "One password attempted across many users to avoid lockout detection.",
+    "distributed": "Many rotating IPs simulate botnet traffic and bypass naive IP limits.",
+    "reverse_brute": "Tests many usernames against one known password candidate."
+  },
   "targetSurface": {
     "login": "Login",
     "api": "API",
     "mixed": "Mixed"
+  },
+  "surfaceDescription": {
+    "login": "Focuses on authentication endpoints and account takeover patterns.",
+    "api": "Focuses on token/key abuse and machine-to-machine request pressure.",
+    "mixed": "Combines login and API pressure to model broader SME exposure."
   },
   "businessProfile": {
     "retail": "Retail",
@@ -26,9 +38,23 @@
     "education": "Education",
     "saas": "SaaS"
   },
+  "businessDescription": {
+    "retail": "Retail usually has seasonal traffic spikes and high account reset volume.",
+    "fintech": "Fintech needs stricter lockout, anomaly detection, and audit-quality controls.",
+    "education": "Education has broad user diversity and frequent credential reuse risk.",
+    "saas": "SaaS prioritizes login reliability while defending high automation traffic."
+  },
+  "education": {
+    "title": "What these options mean",
+    "attackHeading": "Selected attack type",
+    "surfaceHeading": "Selected target surface",
+    "businessHeading": "Selected business profile",
+    "teacherNote": "Tip: choose profile/surface close to your real environment for useful output."
+  },
   "actions": {
     "saveScenario": "Save Scenario",
     "runScenario": "Run Scenario",
+    "stopScenario": "Stop Simulation",
     "newScenario": "New Scenario"
   },
   "saved": {

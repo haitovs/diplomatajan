@@ -1,4 +1,4 @@
-import { Play, Save } from 'lucide-react';
+import { Play, Save, Square } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useI18n } from '../i18n/I18nProvider';
 
@@ -10,16 +10,19 @@ const MotionAside = motion.aside;
 export const ScenarioComposer = ({
   attackTypes = [],
   draft,
+  isUnderAttack = false,
   riskScore,
   scenarios = [],
   selectedScenarioId,
   onDraftChange,
   onSave,
   onRun,
+  onStop,
   onSelectScenario,
   error,
 }) => {
   const { t, formatNumber } = useI18n();
+  const selectedAttackType = attackTypes.find((item) => item.id === draft.attackType) || attackTypes[0];
 
   const riskLabel =
     riskScore >= 75
@@ -120,9 +123,49 @@ export const ScenarioComposer = ({
             <Play size={15} />
             {t('scenario.actions.runScenario')}
           </button>
+          {isUnderAttack && (
+            <button type="button" className="bastion-outline-btn" onClick={onStop}>
+              <Square size={15} />
+              {t('scenario.actions.stopScenario')}
+            </button>
+          )}
         </div>
 
         {error && <p className="mt-3 text-sm text-danger">{error}</p>}
+
+        <div className="mt-6 rounded-xl border border-bastion-line bg-bastion-panel p-4">
+          <h4 className="text-sm bastion-heading">{t('scenario.education.title')}</h4>
+          <div className="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3">
+            <article className="rounded-lg border border-bastion-line p-3 bg-gray-900/30">
+              <div className="text-xs text-bastion-text-mid">{t('scenario.education.attackHeading')}</div>
+              <div className="mt-1 text-sm text-bastion-text-high">{t(`scenario.attackType.${draft.attackType}`)}</div>
+              <p className="mt-1 text-xs text-bastion-text-mid">
+                {t(`scenario.attackDescription.${draft.attackType}`)}
+              </p>
+            </article>
+
+            <article className="rounded-lg border border-bastion-line p-3 bg-gray-900/30">
+              <div className="text-xs text-bastion-text-mid">{t('scenario.education.surfaceHeading')}</div>
+              <div className="mt-1 text-sm text-bastion-text-high">{t(`scenario.targetSurface.${draft.targetSurface}`)}</div>
+              <p className="mt-1 text-xs text-bastion-text-mid">
+                {t(`scenario.surfaceDescription.${draft.targetSurface}`)}
+              </p>
+            </article>
+
+            <article className="rounded-lg border border-bastion-line p-3 bg-gray-900/30">
+              <div className="text-xs text-bastion-text-mid">{t('scenario.education.businessHeading')}</div>
+              <div className="mt-1 text-sm text-bastion-text-high">{t(`scenario.businessProfile.${draft.businessProfile}`)}</div>
+              <p className="mt-1 text-xs text-bastion-text-mid">
+                {t(`scenario.businessDescription.${draft.businessProfile}`)}
+              </p>
+            </article>
+          </div>
+          {selectedAttackType && (
+            <p className="mt-3 text-xs text-bastion-text-mid">
+              {t('scenario.education.teacherNote')}
+            </p>
+          )}
+        </div>
       </MotionDiv>
 
       <MotionAside

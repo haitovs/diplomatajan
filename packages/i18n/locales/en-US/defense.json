@@ -6,6 +6,25 @@
     "gaps": "Gaps",
     "nominalRps": "Nominal RPS"
   },
+  "command": {
+    "title": "Command Center",
+    "subtitle": "Operate attack flow and defense switches in real time.",
+    "attackSection": "Attack Traffic Control",
+    "attackLabel": "Attack traffic",
+    "attackHelp": "Use Start/Stop buttons while presenting so everyone understands current state.",
+    "defenseSection": "Defense Controls",
+    "defenseHelp": "Enable controls and monitor blocked rate + failed authentication impact.",
+    "start": "Start Attack",
+    "stop": "Stop Attack",
+    "attackType": "Attack Type",
+    "intensity": "Intensity",
+    "nominalRps": "Nominal RPS",
+    "activeDefenses": "Active Defenses",
+    "gaps": "Coverage Gaps",
+    "successChance": "Success chance",
+    "launchAttack": "Launch Attack",
+    "simulateBruteforce": "Simulate brute-force attack"
+  },
   "actions": {
     "generateRecommendations": "Generate Recommendations",
     "applyPresetBalanced": "Apply Balanced Preset",

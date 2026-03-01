@@ -1,10 +1,14 @@
 {
   "title": "Hasabatlar",
   "subtitle": "Amaly, iki dilli ýerine ýetiriş hasabatlaryny eksport ediň",
+  "setupHelp": "Hasabat üçin iki snapshot gerek: başlangyç we güýçlendirilen.",
   "actions": {
     "exportTk": "Türkmençe eksport",
     "exportEn": "Iňlisçe eksport",
-    "exportBoth": "Iki dilli eksport"
+    "exportBoth": "Iki dilli eksport",
+    "captureBaseline": "Başlangyç snapshot al",
+    "captureHardened": "Güýçlendirilen snapshot al",
+    "goWorkspace": "Iş giňişligine geç"
   },
   "sections": {
     "overview": "Syn",

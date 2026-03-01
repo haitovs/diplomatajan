@@ -26,7 +26,13 @@ const buildComparisonRows = (baseline, hardened) => [
 ];
 const MotionSection = motion.section;
 
-export const ComparisonView = ({ baselineSnapshot, hardenedSnapshot }) => {
+export const ComparisonView = ({
+  baselineSnapshot,
+  hardenedSnapshot,
+  onCaptureBaseline,
+  onCaptureHardened,
+  onGoWorkspace,
+}) => {
   const { t, formatNumber } = useI18n();
 
   const rows = buildComparisonRows(baselineSnapshot, hardenedSnapshot);
@@ -42,8 +48,20 @@ export const ComparisonView = ({ baselineSnapshot, hardenedSnapshot }) => {
       <p className="text-sm text-bastion-text-mid mt-1">{t('report.sections.comparison')}</p>
 
       {!hasSnapshots && (
-        <div className="mt-6 rounded-xl border border-bastion-line bg-bastion-panel p-4 text-sm text-bastion-text-mid">
-          {t('errors.missingSnapshots')}
+        <div className="mt-6 rounded-xl border border-bastion-line bg-bastion-panel p-4">
+          <p className="text-sm text-bastion-text-mid">{t('errors.missingSnapshots')}</p>
+          <p className="mt-2 text-xs text-bastion-text-mid">{t('report.setupHelp')}</p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button type="button" className="bastion-outline-btn" onClick={onCaptureBaseline}>
+              {t('report.actions.captureBaseline')}
+            </button>
+            <button type="button" className="bastion-outline-btn" onClick={onCaptureHardened}>
+              {t('report.actions.captureHardened')}
+            </button>
+            <button type="button" className="bastion-primary-btn" onClick={onGoWorkspace}>
+              {t('report.actions.goWorkspace')}
+            </button>
+          </div>
         </div>
       )}
 

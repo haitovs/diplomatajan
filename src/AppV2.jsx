@@ -1,10 +1,13 @@
 import {
   Activity,
   AlertTriangle,
+  ArrowRight,
   Clock,
   Lock,
+  Play,
   Shield,
   ShieldCheck,
+  Square,
   Users,
   Zap,
 } from 'lucide-react';
@@ -42,6 +45,7 @@ const metricsCollector = new MetricsCollector();
 const MAP_WINDOW_MS = ANALYTICS_WINDOW_MS;
 const CHART_WINDOW_SECONDS = Math.round(ANALYTICS_WINDOW_MS / 1000);
 const CHART_SAMPLE_INTERVAL_MS = 1000;
+const UI_STATE_UPDATE_INTERVAL_MS = 240;
 const SCENARIO_STORAGE_KEY = 'bastion-scenarios-v1';
 const VIEW_STORAGE_KEY = 'bastion-active-view-v1';
 const DEFAULT_VIEW = 'workspace';
@@ -206,6 +210,7 @@ function AppV2() {
   const [hardenedSnapshot, setHardenedSnapshot] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
   const lastChartSampleRef = useRef(0);
+  const lastUiStateRef = useRef(0);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -222,8 +227,6 @@ function AppV2() {
     engine.start();
     
     const unsubscribe = engine.subscribe((data) => {
-      setState(data);
-      
       // Update metrics collector
       metricsCollector.update(data);
       
@@ -243,12 +246,16 @@ function AppV2() {
           return newData;
         });
       }
-      
-      // Update threat level
-      setThreatLevel({
-        level: metricsCollector.getThreatLevel(),
-        ...metricsCollector.getThreatLabel(),
-      });
+
+      // Throttle high-frequency engine updates to keep controls responsive.
+      if (timestamp - lastUiStateRef.current >= UI_STATE_UPDATE_INTERVAL_MS) {
+        lastUiStateRef.current = timestamp;
+        setState(data);
+        setThreatLevel({
+          level: metricsCollector.getThreatLevel(),
+          ...metricsCollector.getThreatLabel(),
+        });
+      }
     });
 
     return () => {
@@ -258,10 +265,57 @@ function AppV2() {
   }, []);
 
   // Handlers
-  const handleToggleAttack = useCallback((val) => engine.toggleAttack(val), []);
-  const handleSetIntensity = useCallback((val) => engine.setAttackIntensity(val), []);
-  const handleSetAttackType = useCallback((val) => engine.setAttackType(val), []);
-  const handleToggleDefense = useCallback((id, val) => engine.toggleDefense(id, val), []);
+  const handleToggleAttack = useCallback((val) => {
+    setState((prev) => ({
+      ...prev,
+      config: {
+        ...prev.config,
+        isUnderAttack: val,
+      },
+    }));
+    engine.toggleAttack(val);
+  }, []);
+
+  const handleSetIntensity = useCallback((val) => {
+    setState((prev) => ({
+      ...prev,
+      config: {
+        ...prev.config,
+        attackIntensity: val,
+      },
+    }));
+    engine.setAttackIntensity(val);
+  }, []);
+
+  const handleSetAttackType = useCallback((val) => {
+    const nextAttackType = ATTACK_TYPE_LIST.find((item) => item.id === val);
+    setState((prev) => ({
+      ...prev,
+      config: {
+        ...prev.config,
+        attackType: val,
+      },
+      attackType: nextAttackType || prev.attackType,
+    }));
+    engine.setAttackType(val);
+  }, []);
+
+  const handleToggleDefense = useCallback((id, val) => {
+    setState((prev) => {
+      const nextDefenses = Object.fromEntries(
+        Object.entries(prev.defenses).map(([key, defense]) => [
+          key,
+          defense.id === id ? { ...defense, enabled: val } : defense,
+        ]),
+      );
+
+      return {
+        ...prev,
+        defenses: nextDefenses,
+      };
+    });
+    engine.toggleDefense(id, val);
+  }, []);
   const handleReset = useCallback(() => { 
     engine.reset(); 
     metricsCollector.reset();
@@ -350,8 +404,8 @@ function AppV2() {
   }, [state.config.attackIntensity, state.defenses, state.stats.blockedRequests, state.stats.totalRequests]);
 
   const handleApplyPreset = useCallback((presetType) => {
-    const enableDefense = (id) => engine.toggleDefense(id, true);
-    const disableDefense = (id) => engine.toggleDefense(id, false);
+    const enableDefense = (id) => handleToggleDefense(id, true);
+    const disableDefense = (id) => handleToggleDefense(id, false);
 
     if (presetType === 'balanced') {
       ['rate_limit', 'ip_blacklist', 'captcha', 'account_lockout'].forEach(enableDefense);
@@ -363,7 +417,7 @@ function AppV2() {
       ['rate_limit', 'ip_blacklist', 'captcha', 'account_lockout', 'behavioral', 'geo_blocking', 'honeypot', 'progressive_delay']
         .forEach(enableDefense);
     }
-  }, []);
+  }, [handleToggleDefense]);
 
   const formatDuration = (ms) => {
     if (!ms) return '0s';
@@ -387,6 +441,34 @@ function AppV2() {
     ? savedScenarios.find((scenario) => scenario.id === selectedScenarioId)
     : null;
   const safeActiveView = VALID_VIEWS.has(activeView) ? activeView : DEFAULT_VIEW;
+  const defenseList = useMemo(() => defenseMapToConfigList(state.defenses), [state.defenses]);
+  const enabledDefenseCount = useMemo(
+    () => defenseList.filter((item) => item.enabled).length,
+    [defenseList],
+  );
+  const blockedRate = state.stats.totalRequests
+    ? Math.round((state.stats.blockedRequests / state.stats.totalRequests) * 100)
+    : 0;
+  const workflowSteps = [
+    t('dashboard.workflow.step1'),
+    t('dashboard.workflow.step2'),
+    t('dashboard.workflow.step3'),
+    t('dashboard.workflow.step4'),
+    t('dashboard.workflow.step5'),
+  ];
+  const actionableInsights = [
+    t('dashboard.insights.blockedRate', { value: blockedRate }),
+    t('dashboard.insights.defenseCoverage', {
+      enabled: enabledDefenseCount,
+      total: defenseList.length,
+    }),
+    state.config.isUnderAttack
+      ? t('dashboard.insights.statusUnderAttack')
+      : t('dashboard.insights.statusStopped'),
+    recommendations.length
+      ? t('dashboard.insights.recommendationReady', { count: recommendations.length })
+      : t('dashboard.insights.recommendationMissing'),
+  ];
 
   return (
     <main className="min-h-screen p-4 md:p-6 font-sans bastion-app">
@@ -437,6 +519,24 @@ function AppV2() {
 
             <button
               type="button"
+              onClick={() => handleToggleAttack(true)}
+              className="bastion-primary-btn"
+            >
+              <Play size={15} />
+              {t('common.actions.start')}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleToggleAttack(false)}
+              className="bastion-outline-btn"
+            >
+              <Square size={15} />
+              {t('common.actions.stop')}
+            </button>
+
+            <button
+              type="button"
               onClick={handleReset}
               className="bastion-outline-btn"
             >
@@ -462,16 +562,69 @@ function AppV2() {
               <StatCard title={t('dashboard.stats.attackDuration')} value={formatDuration(state.stats.attackDuration)} icon={Clock} color="#1fa89a" />
             </section>
 
-            <div className="mb-6 flex flex-wrap gap-3">
-              <button type="button" className="bastion-outline-btn" onClick={() => handleTakeSnapshot('baseline')}>
-                <ShieldCheck size={15} />
-                {t('common.actions.snapshotBaseline')}
-              </button>
-              <button type="button" className="bastion-outline-btn" onClick={() => handleTakeSnapshot('hardened')}>
-                <ShieldCheck size={15} />
-                {t('common.actions.snapshotHardened')}
-              </button>
-            </div>
+            <section className="glass-panel bastion-surface p-4 mb-6">
+              <h3 className="text-sm bastion-heading">{t('dashboard.simulation.title')}</h3>
+              <p className="mt-1 text-xs text-bastion-text-mid">{t('dashboard.simulation.subtitle')}</p>
+              <div className="mt-3 flex flex-wrap gap-3">
+                <button type="button" className="bastion-primary-btn" onClick={() => handleToggleAttack(true)}>
+                  <Play size={15} />
+                  {t('common.actions.start')}
+                </button>
+                <button type="button" className="bastion-outline-btn" onClick={() => handleToggleAttack(false)}>
+                  <Square size={15} />
+                  {t('common.actions.stop')}
+                </button>
+                <button type="button" className="bastion-outline-btn" onClick={() => handleTakeSnapshot('baseline')}>
+                  <ShieldCheck size={15} />
+                  {t('common.actions.snapshotBaseline')}
+                </button>
+                <button type="button" className="bastion-outline-btn" onClick={() => handleTakeSnapshot('hardened')}>
+                  <ShieldCheck size={15} />
+                  {t('common.actions.snapshotHardened')}
+                </button>
+              </div>
+              <div className="mt-3 text-xs text-bastion-text-mid">
+                {state.config.isUnderAttack ? t('dashboard.simulation.running') : t('dashboard.simulation.stopped')}
+              </div>
+            </section>
+
+            <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              <article className="glass-panel bastion-surface p-4">
+                <h3 className="text-sm bastion-heading">{t('dashboard.workflow.title')}</h3>
+                <div className="mt-3 space-y-2">
+                  {workflowSteps.map((step) => (
+                    <div key={step} className="text-xs text-bastion-text-mid">{step}</div>
+                  ))}
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <button type="button" className="bastion-outline-btn" onClick={() => setActiveView('scenario')}>
+                    {t('dashboard.workflow.openScenario')}
+                    <ArrowRight size={14} />
+                  </button>
+                  <button type="button" className="bastion-outline-btn" onClick={() => setActiveView('defense')}>
+                    {t('dashboard.workflow.openDefense')}
+                    <ArrowRight size={14} />
+                  </button>
+                  <button type="button" className="bastion-outline-btn" onClick={() => setActiveView('comparison')}>
+                    {t('dashboard.workflow.openComparison')}
+                    <ArrowRight size={14} />
+                  </button>
+                  <button type="button" className="bastion-outline-btn" onClick={() => setActiveView('reports')}>
+                    {t('dashboard.workflow.openReports')}
+                    <ArrowRight size={14} />
+                  </button>
+                </div>
+              </article>
+
+              <article className="glass-panel bastion-surface p-4">
+                <h3 className="text-sm bastion-heading">{t('dashboard.insights.title')}</h3>
+                <div className="mt-3 space-y-2">
+                  {actionableInsights.map((item) => (
+                    <div key={item} className="text-xs text-bastion-text-mid">{item}</div>
+                  ))}
+                </div>
+              </article>
+            </section>
 
             <p className="text-xs text-bastion-text-mid mb-2">{t('dashboard.liveDetection')} ({CHART_WINDOW_SECONDS}s)</p>
             <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
@@ -579,12 +732,14 @@ function AppV2() {
             <ScenarioComposer
               attackTypes={ATTACK_TYPE_LIST}
               draft={scenarioDraft}
+              isUnderAttack={state.config.isUnderAttack}
               riskScore={scenarioRiskScore}
               scenarios={savedScenarios}
               selectedScenarioId={selectedScenarioId}
               onDraftChange={handleScenarioDraftChange}
               onSave={handleSaveScenario}
               onRun={handleRunScenario}
+              onStop={() => handleToggleAttack(false)}
               onSelectScenario={handleSelectScenario}
               error={scenarioError}
             />
@@ -620,7 +775,13 @@ function AppV2() {
           )}
 
           {safeActiveView === 'comparison' && (
-            <ComparisonView baselineSnapshot={baselineSnapshot} hardenedSnapshot={hardenedSnapshot} />
+            <ComparisonView
+              baselineSnapshot={baselineSnapshot}
+              hardenedSnapshot={hardenedSnapshot}
+              onCaptureBaseline={() => handleTakeSnapshot('baseline')}
+              onCaptureHardened={() => handleTakeSnapshot('hardened')}
+              onGoWorkspace={() => setActiveView('workspace')}
+            />
           )}
 
           {safeActiveView === 'reports' && (
@@ -629,6 +790,9 @@ function AppV2() {
               baselineSnapshot={baselineSnapshot}
               hardenedSnapshot={hardenedSnapshot}
               recommendations={recommendations}
+              onCaptureBaseline={() => handleTakeSnapshot('baseline')}
+              onCaptureHardened={() => handleTakeSnapshot('hardened')}
+              onGoWorkspace={() => setActiveView('workspace')}
             />
           )}
 

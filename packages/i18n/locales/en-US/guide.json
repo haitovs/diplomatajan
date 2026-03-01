@@ -1,33 +1,62 @@
 {
   "title": "How Bastion Twin Works",
-  "subtitle": "Understand the workflow, practical value, and best way to use the platform",
+  "subtitle": "Teacher-style explanation of workflow, practical value, and controls",
   "overview": {
     "title": "What This Platform Is",
-    "body": "Bastion Twin is an interactive cyber-defense planning workspace for SME teams. It simulates realistic login/API attacks, lets you tune controls in real time, and converts results into implementation-ready actions."
+    "body": "Bastion Twin is a hands-on cyber-defense classroom for your real SME environment. You run controlled attack simulations, test defenses safely, and turn outcomes into concrete implementation steps."
   },
   "workflow": {
-    "title": "How It Works",
+    "title": "How It Works (Teacher Flow)",
     "steps": {
       "compose": {
         "title": "1. Compose Scenario",
-        "body": "Set attack type, intensity, target surface, and business profile."
+        "body": "Pick attack type, intensity, target surface, and business profile that match your reality."
       },
       "run": {
         "title": "2. Run Live Simulation",
-        "body": "Launch the scenario and monitor traffic, map origins, and threat levels."
+        "body": "Press Start and watch traffic, failed auth, blocked rate, and origin map in real time."
       },
       "tune": {
         "title": "3. Tune Defenses",
-        "body": "Enable/disable controls and immediately observe security KPI changes."
+        "body": "Enable controls in Command Center and instantly observe KPI changes."
       },
       "compare": {
-        "title": "4. Compare Baseline vs Hardened",
-        "body": "Capture snapshots and measure what improved after hardening."
+        "title": "4. Capture Baseline vs Hardened",
+        "body": "Take baseline snapshot before tuning and hardened snapshot after tuning."
       },
       "report": {
         "title": "5. Export Action Plan",
-        "body": "Generate bilingual reports to share with engineering and leadership."
+        "body": "Generate bilingual report to share with engineering, operations, and management."
       }
+    }
+  },
+  "attackLessons": {
+    "title": "Attack Types Explained",
+    "items": {
+      "dictionary": "Dictionary: many common passwords against one/few accounts.",
+      "credential_stuffing": "Credential Stuffing: leaked account-password pairs tested at scale.",
+      "password_spray": "Password Spray: one common password across many accounts.",
+      "distributed": "Distributed: many rotating IPs, like botnet pressure.",
+      "reverse_brute": "Reverse Brute: many usernames tested against one known password candidate."
+    }
+  },
+  "businessLessons": {
+    "title": "Business Profiles Explained",
+    "items": {
+      "retail": "Retail: seasonal spikes and customer-account reset pressure.",
+      "fintech": "Fintech: strict lockout, anomaly detection, and compliance-grade controls.",
+      "education": "Education: many user types and high password-reuse risk.",
+      "saas": "SaaS: balance login reliability with strong anti-automation defense."
+    }
+  },
+  "commandLessons": {
+    "title": "Command Center Buttons Explained",
+    "items": {
+      "start": "Start Attack: begins simulated malicious traffic.",
+      "stop": "Stop Attack: immediately pauses attack traffic.",
+      "intensity": "Intensity slider: sets how aggressive attack pressure is.",
+      "defenses": "Defense toggles: each switch enables a mitigation strategy.",
+      "presets": "Balanced/Strict presets: quick policy templates for demo and testing."
     }
   },
   "usefulness": {
@@ -35,34 +64,34 @@
     "items": {
       "risk": {
         "title": "Risk Visibility",
-        "body": "See where threats are coming from and how severe the exposure is."
+        "body": "See threat pressure and where controls are weak."
       },
       "decision": {
         "title": "Decision Confidence",
-        "body": "Test defense combinations before changing production policies."
+        "body": "Test policy changes before touching production."
       },
       "roi": {
         "title": "Measurable ROI",
-        "body": "Use comparison metrics to justify security investments with evidence."
+        "body": "Use before/after metrics to prove what improved."
       },
       "alignment": {
         "title": "Team Alignment",
-        "body": "Share a common view with Ops, Security, and Management using the same report."
+        "body": "Give all stakeholders one understandable report."
       }
     }
   },
   "quickStart": {
     "title": "How To Use This Website (Quick Start)",
     "steps": {
-      "one": "Open Scenario Composer and save one scenario for your environment.",
-      "two": "Run it from Workspace and record a baseline snapshot.",
-      "three": "Move to Defense Lab and apply/tune controls.",
-      "four": "Capture a hardened snapshot and review Comparison View.",
+      "one": "Create one scenario close to your real traffic shape.",
+      "two": "Start simulation and capture baseline snapshot.",
+      "three": "Enable defense controls and adjust intensity.",
+      "four": "Capture hardened snapshot and open Comparison View.",
       "five": "Generate recommendations and export report in tk/en."
     }
   },
   "tips": {
-    "title": "Best Practice",
-    "body": "Re-run your core scenarios monthly or after major auth/policy changes. Track trend improvements over time."
+    "title": "Teacher Tip",
+    "body": "Repeat the same scenario monthly. Compare trends instead of one-off numbers."
   }
 }

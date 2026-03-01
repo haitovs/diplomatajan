@@ -8,6 +8,9 @@ const MotionArticle = motion.article;
 const WORKFLOW_STEP_KEYS = ['compose', 'run', 'tune', 'compare', 'report'];
 const USEFULNESS_KEYS = ['risk', 'decision', 'roi', 'alignment'];
 const QUICK_START_KEYS = ['one', 'two', 'three', 'four', 'five'];
+const ATTACK_LESSON_KEYS = ['dictionary', 'credential_stuffing', 'password_spray', 'distributed', 'reverse_brute'];
+const BUSINESS_LESSON_KEYS = ['retail', 'fintech', 'education', 'saas'];
+const COMMAND_LESSON_KEYS = ['start', 'stop', 'intensity', 'defenses', 'presets'];
 
 const WORKFLOW_ICONS = {
   compose: Sparkles,
@@ -60,6 +63,42 @@ export const GuidePage = () => {
             );
           })}
         </div>
+      </article>
+
+      <article className="glass-panel bastion-surface p-6">
+        <h3 className="text-lg bastion-heading">{t('guide.attackLessons.title')}</h3>
+        <ul className="guide-quickstart mt-4">
+          {ATTACK_LESSON_KEYS.map((key) => (
+            <li key={key} className="guide-quickstart-item">
+              <span className="guide-bullet" aria-hidden="true" />
+              <span className="text-sm text-bastion-text-mid">{t(`guide.attackLessons.items.${key}`)}</span>
+            </li>
+          ))}
+        </ul>
+      </article>
+
+      <article className="glass-panel bastion-surface p-6">
+        <h3 className="text-lg bastion-heading">{t('guide.businessLessons.title')}</h3>
+        <ul className="guide-quickstart mt-4">
+          {BUSINESS_LESSON_KEYS.map((key) => (
+            <li key={key} className="guide-quickstart-item">
+              <span className="guide-bullet" aria-hidden="true" />
+              <span className="text-sm text-bastion-text-mid">{t(`guide.businessLessons.items.${key}`)}</span>
+            </li>
+          ))}
+        </ul>
+      </article>
+
+      <article className="glass-panel bastion-surface p-6">
+        <h3 className="text-lg bastion-heading">{t('guide.commandLessons.title')}</h3>
+        <ul className="guide-quickstart mt-4">
+          {COMMAND_LESSON_KEYS.map((key) => (
+            <li key={key} className="guide-quickstart-item">
+              <span className="guide-bullet" aria-hidden="true" />
+              <span className="text-sm text-bastion-text-mid">{t(`guide.commandLessons.items.${key}`)}</span>
+            </li>
+          ))}
+        </ul>
       </article>
 
       <article className="glass-panel bastion-surface p-6">

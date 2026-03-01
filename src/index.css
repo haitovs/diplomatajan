@@ -1388,6 +1388,78 @@ table {
   background: #d1d5db;
 }
 
+.theme-light {
+  --bg-900: #eef4f7;
+  --bg-800: #f7fbfd;
+  --surface-700: #ffffff;
+  --accent-copper: #8a4a29;
+  --accent-teal: #0f7f75;
+  --danger-red: #bd3a2f;
+  --warning-amber: #986812;
+  --text-high: #0f172a;
+  --text-mid: #475569;
+  --line-soft: rgba(71, 85, 105, 0.26);
+}
+
+.theme-light .bastion-app {
+  background:
+    radial-gradient(860px 540px at 8% -5%, rgba(138, 74, 41, 0.12), transparent 70%),
+    radial-gradient(980px 580px at 95% -10%, rgba(15, 127, 117, 0.12), transparent 72%),
+    linear-gradient(180deg, #f4f8fb, #eef4f8 50%, #ecf2f7);
+}
+
+.theme-light .bastion-surface {
+  background: linear-gradient(170deg, rgba(255, 255, 255, 0.95), rgba(248, 251, 255, 0.9));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 16px 32px rgba(15, 23, 42, 0.1);
+}
+
+.theme-light .bastion-nav {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(71, 85, 105, 0.24);
+}
+
+.theme-light .bastion-nav-btn {
+  background: rgba(248, 250, 252, 0.94);
+  color: #475569;
+  border-color: rgba(148, 163, 184, 0.45);
+}
+
+.theme-light .bastion-nav-btn:hover {
+  border-color: rgba(15, 127, 117, 0.46);
+  color: #0f172a;
+}
+
+.theme-light .bastion-nav-btn.is-active {
+  border-color: rgba(138, 74, 41, 0.6);
+  background: rgba(138, 74, 41, 0.1);
+  color: #0f172a;
+}
+
+.theme-light .bastion-outline-btn {
+  border-color: rgba(100, 116, 139, 0.35);
+  background: rgba(255, 255, 255, 0.92);
+  color: #334155;
+}
+
+.theme-light .bastion-outline-btn:hover {
+  border-color: rgba(15, 127, 117, 0.5);
+  color: #0f172a;
+}
+
+.theme-light .bastion-primary-btn {
+  border-color: rgba(138, 74, 41, 0.55);
+  background: linear-gradient(120deg, rgba(138, 74, 41, 0.16), rgba(138, 74, 41, 0.24));
+  color: #0f172a;
+}
+
+.theme-light .bg-bastion-panel {
+  background: rgba(255, 255, 255, 0.84);
+}
+
+.theme-light .bastion-metric-pill {
+  background: rgba(255, 255, 255, 0.82);
+}
+
 .theme-midnight {
   --bg-color: #0d1117;
   --bg-secondary: #161b22;
@@ -1396,6 +1468,16 @@ table {
   --text-secondary: #8b949e;
   --card-bg: rgba(22, 27, 34, 0.85);
   --card-border: rgba(139, 148, 158, 0.35);
+  --bg-900: #0d1117;
+  --bg-800: #161b22;
+  --surface-700: #21262d;
+  --accent-copper: #bd7b52;
+  --accent-teal: #4ba8b6;
+  --danger-red: #d9544d;
+  --warning-amber: #d7a347;
+  --text-high: #dce4ec;
+  --text-mid: #9ba9ba;
+  --line-soft: rgba(148, 163, 184, 0.24);
 }
 
 .theme-hacker {
@@ -1408,6 +1490,16 @@ table {
   --secondary-color: #4ade80;
   --card-bg: rgba(2, 20, 2, 0.82);
   --card-border: rgba(34, 197, 94, 0.35);
+  --bg-900: #081108;
+  --bg-800: #0f1b12;
+  --surface-700: #122618;
+  --accent-copper: #8ccf4d;
+  --accent-teal: #3bcc76;
+  --danger-red: #ef4444;
+  --warning-amber: #c6d23f;
+  --text-high: #b5f0c4;
+  --text-mid: #7db38f;
+  --line-soft: rgba(34, 197, 94, 0.22);
 }
 
 .theme-hacker * {

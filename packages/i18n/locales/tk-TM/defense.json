@@ -6,6 +6,25 @@
     "gaps": "Boşluklar",
     "nominalRps": "Nominal RPS"
   },
+  "command": {
+    "title": "Command Center",
+    "subtitle": "Hüjüm akymyny we gorag açarlaryny janly dolandyryň.",
+    "attackSection": "Hüjüm traffiginiň dolandyryşy",
+    "attackLabel": "Hüjüm traffigi",
+    "attackHelp": "Tanyşdyryş wagty Start/Stop düwmeleri ýagdaýy has düşnükli görkezýär.",
+    "defenseSection": "Gorag dolandyryşlary",
+    "defenseHelp": "Dolandyryşlary açyň we böwetlenen derejesi + awtorizasiýa täsirini görüň.",
+    "start": "Hüjümi başlat",
+    "stop": "Hüjümi sakla",
+    "attackType": "Hüjüm görnüşi",
+    "intensity": "Güýç",
+    "nominalRps": "Nominal RPS",
+    "activeDefenses": "Işjeň goraglar",
+    "gaps": "Boşluklar",
+    "successChance": "Üstünlik ähtimallygy",
+    "launchAttack": "Hüjümi başlat",
+    "simulateBruteforce": "Brute-force hüjümini simulirle"
+  },
   "actions": {
     "generateRecommendations": "Maslahatlary döret",
     "applyPresetBalanced": "Balansly şablony ulan",

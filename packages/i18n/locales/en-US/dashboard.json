@@ -19,6 +19,33 @@
     "blockedPerSec": "Blocked/s",
     "failedPerSec": "Failed/s"
   },
+  "simulation": {
+    "title": "Simulation Controls",
+    "subtitle": "Start/stop attack traffic and capture snapshots for comparison and reports.",
+    "running": "Simulation Running",
+    "stopped": "Simulation Stopped"
+  },
+  "workflow": {
+    "title": "Step-by-Step Workflow",
+    "step1": "1) Open Scenario Composer and pick attack + business context.",
+    "step2": "2) Start simulation and capture baseline snapshot.",
+    "step3": "3) Enable/tune defenses in Defense Lab or Command Center.",
+    "step4": "4) Capture hardened snapshot and inspect Comparison View.",
+    "step5": "5) Export the bilingual report for implementation.",
+    "openScenario": "Open Scenario Composer",
+    "openDefense": "Open Defense Lab",
+    "openComparison": "Open Comparison",
+    "openReports": "Open Reports"
+  },
+  "insights": {
+    "title": "Actionable Insights",
+    "blockedRate": "Current blocked rate: {{value}}%.",
+    "defenseCoverage": "Defense coverage: {{enabled}}/{{total}} controls enabled.",
+    "statusUnderAttack": "Simulation is running. Tune controls and watch KPI changes in real time.",
+    "statusStopped": "Simulation is stopped. Start it to generate meaningful telemetry.",
+    "recommendationReady": "Recommendations ready: {{count}} prioritized actions.",
+    "recommendationMissing": "No recommendations yet. Generate them after a live run."
+  },
   "defenseStats": {
     "title": "Defense Statistics",
     "rateLimited": "Rate Limited",

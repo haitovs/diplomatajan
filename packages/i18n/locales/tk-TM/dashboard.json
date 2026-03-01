@@ -19,6 +19,33 @@
     "blockedPerSec": "Böwetlenen/s",
     "failedPerSec": "Şowsuz/s"
   },
+  "simulation": {
+    "title": "Simulýasiýa dolandyryşy",
+    "subtitle": "Hüjüm traffigini başladyň/saklaň we deňeşdirme/hasabat üçin snapshot alyň.",
+    "running": "Simulýasiýa işleýär",
+    "stopped": "Simulýasiýa saklandy"
+  },
+  "workflow": {
+    "title": "Ädimme-ädim iş tertibi",
+    "step1": "1) Ssenariý düzüjide hüjüm + biznes kontekstini saýlaň.",
+    "step2": "2) Simulýasiýany işledip başlangyç snapshot alyň.",
+    "step3": "3) Gorag laboratoriýasynda ýa-da Command Center-de dolandyryşlary sazlaň.",
+    "step4": "4) Güýçlendirilen snapshot alyň we Deňeşdirme görnüşine serediň.",
+    "step5": "5) Ýerine ýetiriş üçin iki dilli hasabat eksport ediň.",
+    "openScenario": "Ssenariý düzüjini aç",
+    "openDefense": "Gorag laboratoriýasyny aç",
+    "openComparison": "Deňeşdirmegi aç",
+    "openReports": "Hasabatlary aç"
+  },
+  "insights": {
+    "title": "Amaly netije maslahatlary",
+    "blockedRate": "Häzirki böwetlenen derejesi: {{value}}%.",
+    "defenseCoverage": "Gorag gurşawy: {{enabled}}/{{total}} dolandyryş işjeň.",
+    "statusUnderAttack": "Simulýasiýa işleýär. Dolandyryşlary sazlap KPI üýtgemesini janly görüň.",
+    "statusStopped": "Simulýasiýa saklandy. Manyly telemetriýa üçin ony işlediň.",
+    "recommendationReady": "Maslahatlar taýýar: {{count}} ileri tutulýan ädim.",
+    "recommendationMissing": "Entäk maslahat ýok. Janly işledişden soň dörediň."
+  },
   "defenseStats": {
     "title": "Gorag statistikasy",
     "rateLimited": "Çäklenen tizlik",

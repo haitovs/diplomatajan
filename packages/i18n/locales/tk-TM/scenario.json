@@ -15,10 +15,22 @@
     "distributed": "Paýlanan hüjüm",
     "reverse_brute": "Ters brute-force"
   },
+  "attackDescription": {
+    "dictionary": "Hüjümçi bir-iki hasapda köp umumy paroly synaýar. Çalt we göze görünýär.",
+    "credential_stuffing": "Syzan username/password jübütleri ulanylýar. Has real we üstünlik ähtimallygy ýokary.",
+    "password_spray": "Bir parol köp ulanyja garşy synalýar, gulplama ýüze çykmazlygy üçin.",
+    "distributed": "Botnete meňzeş köp IP bilen trafigi paýlaýar we ýönekeý IP çäklerini geçýär.",
+    "reverse_brute": "Bir çaklanylýan parola garşy köp ulanyjy adyny barlaýar."
+  },
   "targetSurface": {
     "login": "Login",
     "api": "API",
     "mixed": "Garyşyk"
+  },
+  "surfaceDescription": {
+    "login": "Awtentifikasiýa nokatlaryna we hasap ele geçiriş nagyşlaryna ünsi jemleýär.",
+    "api": "Token/açar sütemine we maşynlaryň arasyndaky traffik basyşyna ünsi jemleýär.",
+    "mixed": "KOB gurşawy üçin login + API basyşyny bilelikde modelleýär."
   },
   "businessProfile": {
     "retail": "Söwda",
@@ -26,9 +38,23 @@
     "education": "Bilim",
     "saas": "SaaS"
   },
+  "businessDescription": {
+    "retail": "Söwda ulgamynda möwsümleýin traffik artýar we hasap dikeltmeler köp bolýar.",
+    "fintech": "Fintech üçin gaty gulplama, anomaliýa anyklama we audit derejeli gözegçilik gerek.",
+    "education": "Bilim ulgamynda ulanyjylaryň dürli bolmagy we gaýtadan ulanylýan parol töwekgelçiligi ýokary.",
+    "saas": "SaaS login ygtybarlylygyny saklap ýokary awtomat traffige garşy durmaly."
+  },
+  "education": {
+    "title": "Bu saýlawlar nämäni aňladýar",
+    "attackHeading": "Saýlanan hüjüm görnüşi",
+    "surfaceHeading": "Saýlanan nyşan üstü",
+    "businessHeading": "Saýlanan biznes profili",
+    "teacherNote": "Maslahat: peýdaly netije üçin profili/nyşan üstüni hakyky gurşawa ýakyn saýlaň."
+  },
   "actions": {
     "saveScenario": "Ssenariýi ýatda sakla",
     "runScenario": "Ssenariýi işled",
+    "stopScenario": "Simulýasiýany sakla",
     "newScenario": "Täze ssenariý"
   },
   "saved": {
