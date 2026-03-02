@@ -7,27 +7,11 @@ import defenseEn from '../../packages/i18n/locales/en-US/defense.json';
 import reportEn from '../../packages/i18n/locales/en-US/report.json';
 import errorsEn from '../../packages/i18n/locales/en-US/errors.json';
 import guideEn from '../../packages/i18n/locales/en-US/guide.json';
-import commonTk from '../../packages/i18n/locales/tk-TM/common.json';
-import dashboardTk from '../../packages/i18n/locales/tk-TM/dashboard.json';
-import scenarioTk from '../../packages/i18n/locales/tk-TM/scenario.json';
-import defenseTk from '../../packages/i18n/locales/tk-TM/defense.json';
-import reportTk from '../../packages/i18n/locales/tk-TM/report.json';
-import errorsTk from '../../packages/i18n/locales/tk-TM/errors.json';
-import guideTk from '../../packages/i18n/locales/tk-TM/guide.json';
 
-const DEFAULT_LOCALE = 'tk-TM';
+const DEFAULT_LOCALE = 'en-US';
 const STORAGE_KEY = 'bastion-locale';
 
 const locales = {
-  'tk-TM': {
-    common: commonTk,
-    dashboard: dashboardTk,
-    scenario: scenarioTk,
-    defense: defenseTk,
-    report: reportTk,
-    errors: errorsTk,
-    guide: guideTk,
-  },
   'en-US': {
     common: commonEn,
     dashboard: dashboardEn,
@@ -45,7 +29,7 @@ const I18nContext = createContext({
   t: (key) => key,
   formatNumber: (value) => String(value),
   formatDate: (value) => String(value),
-  supportedLocales: ['tk-TM', 'en-US'],
+  supportedLocales: ['en-US'],
 });
 
 const getByPath = (obj, path) =>

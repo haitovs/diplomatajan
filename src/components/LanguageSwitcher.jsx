@@ -4,6 +4,10 @@ import { useI18n } from '../i18n/I18nProvider';
 export const LanguageSwitcher = () => {
   const { locale, setLocale, t, supportedLocales } = useI18n();
 
+  if (supportedLocales.length <= 1) {
+    return null;
+  }
+
   return (
     <div className="flex items-center gap-2 rounded-xl border border-bastion-line bg-bastion-panel px-3 py-2">
       <Languages size={15} className="text-bastion-text-mid" />

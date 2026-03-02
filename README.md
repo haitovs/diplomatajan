@@ -1,5 +1,8 @@
 # Bastion Twin: SME Cyber Defense Planner (Turkmen-First)
 
+MVP blueprint and rollout plan:
+- [Bastion Twin MVP Blueprint](docs/BASTION_TWIN_MVP_BLUEPRINT.md)
+
 Bastion Twin is a practical cyber-defense planning app for SME security teams.
 It extends the existing brute-force simulator into an interactive decision platform with:
 

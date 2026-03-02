@@ -1,4 +1,4 @@
-export type LocaleCode = 'tk-TM' | 'en-US';
+export type LocaleCode = 'en-US' | 'tk-TM' | 'ru-RU';
 
 export type AttackTypeId =
   | 'dictionary'
