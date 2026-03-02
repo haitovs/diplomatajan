@@ -8,6 +8,11 @@ export const LanguageSwitcher = () => {
     return null;
   }
 
+  const getLocaleLabel = (code) => {
+    const translation = t(`common.languages.${code}`);
+    return translation === `common.languages.${code}` ? code : translation;
+  };
+
   return (
     <div className="flex items-center gap-2 rounded-xl border border-bastion-line bg-bastion-panel px-3 py-2">
       <Languages size={15} className="text-bastion-text-mid" />
@@ -23,7 +28,7 @@ export const LanguageSwitcher = () => {
       >
         {supportedLocales.map((code) => (
           <option key={code} value={code}>
-            {t(`common.languages.${code}`)}
+            {getLocaleLabel(code)}
           </option>
         ))}
       </select>
