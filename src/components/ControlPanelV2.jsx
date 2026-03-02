@@ -36,30 +36,30 @@ const ControlPanelV2Base = ({
 
   return (
     <div className="glass-panel p-6">
-      <h2 className="text-xl font-bold mb-1 flex items-center gap-2 text-white">
+      <h2 className="text-xl font-bold mb-1 flex items-center gap-2 text-bastion-text-high">
         <Zap className="text-warning" size={24} />
         {t('defense.command.title')}
       </h2>
       <p className="text-xs text-bastion-text-mid mb-5">{t('defense.command.subtitle')}</p>
 
       <div className="mb-4 flex flex-wrap gap-2 text-xs">
-        <span className="rounded-full border border-gray-700/50 bg-gray-800/50 px-2 py-0.5 text-gray-400">
+        <span className="bastion-chip rounded-full border px-2 py-0.5 text-bastion-text-mid">
           {t('defense.command.intensity')} {config.attackIntensity}x
         </span>
-        <span className="rounded-full border border-red-500/30 bg-red-500/10 px-2 py-0.5 text-red-400">
+        <span className="rounded-full border border-red-500/30 bg-red-500/10 px-2 py-0.5 text-danger">
           {t('defense.command.nominalRps')} ~{estimatedAttackRps}
         </span>
-        <span className="rounded-full border border-blue-500/30 bg-blue-500/10 px-2 py-0.5 text-blue-500">
+        <span className="rounded-full border border-blue-500/30 bg-blue-500/10 px-2 py-0.5 text-secondary">
           {t('defense.command.activeDefenses')} {enabledDefenses}/{defenseList.length}
         </span>
-        <span className="rounded-full border border-yellow-500/30 bg-yellow-500/10 px-2 py-0.5 text-yellow-500">
+        <span className="rounded-full border border-yellow-500/30 bg-yellow-500/10 px-2 py-0.5 text-warning">
           {t('defense.command.gaps')} {disabledDefenses}
         </span>
       </div>
 
       <div className="space-y-6">
         <div className="space-y-4">
-          <h3 className="text-sm font-medium text-gray-400">{t('defense.command.attackSection')}</h3>
+          <h3 className="text-sm font-medium text-bastion-text-mid">{t('defense.command.attackSection')}</h3>
 
           <div className="flex flex-wrap items-center gap-2 mb-1">
             <button type="button" className="bastion-primary-btn" onClick={() => onToggleAttack(true)}>
@@ -76,10 +76,10 @@ const ControlPanelV2Base = ({
 
           <div className="flex items-center justify-between mt-2">
             <div className="flex items-center gap-3">
-              <Target className={config.isUnderAttack ? 'text-danger' : 'text-gray-500'} size={20} />
+              <Target className={config.isUnderAttack ? 'text-danger' : 'text-bastion-text-mid'} size={20} />
               <div>
-                <span className="block text-gray-200 font-medium">{t('defense.command.launchAttack')}</span>
-                <span className="text-xs text-gray-500">{t('defense.command.simulateBruteforce')}</span>
+                <span className="block text-bastion-text-high font-medium">{t('defense.command.launchAttack')}</span>
+                <span className="text-xs text-bastion-text-mid">{t('defense.command.simulateBruteforce')}</span>
               </div>
             </div>
             <input
@@ -95,7 +95,7 @@ const ControlPanelV2Base = ({
           <div className={`attack-config transition-all duration-300 ${config.isUnderAttack ? 'opacity-100 max-h-96' : 'opacity-50 max-h-0 overflow-hidden'}`}>
             <div className="pl-4 border-l-2 border-red-500/30 ml-2 space-y-4">
               <div>
-                <label className="text-xs text-gray-400 block mb-2">{t('defense.command.attackType')}</label>
+                <label className="text-xs text-bastion-text-mid block mb-2">{t('defense.command.attackType')}</label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                   {ATTACK_TYPE_LIST.map((type) => (
                     <button
@@ -110,7 +110,7 @@ const ControlPanelV2Base = ({
                       }`}
                     >
                       <span className="text-lg">{type.icon}</span>
-                      <span className="block text-gray-200 font-medium">{type.name}</span>
+                      <span className="block text-bastion-text-high font-medium">{type.name}</span>
                     </button>
                   ))}
                 </div>
@@ -118,16 +118,16 @@ const ControlPanelV2Base = ({
                 <div className="mt-2 rounded-lg border border-red-500/30 bg-red-500/10 p-3">
                   <div className="flex items-center gap-2">
                     <span className="text-lg" aria-hidden="true">{selectedAttackType.icon}</span>
-                    <span className="text-sm font-medium text-red-400">{selectedAttackType.name}</span>
+                    <span className="text-sm font-medium text-danger">{selectedAttackType.name}</span>
                   </div>
-                  <p id="attack-type-description" className="mt-1 text-xs text-gray-300">
+                  <p id="attack-type-description" className="mt-1 text-xs text-bastion-text-mid">
                     {selectedAttackType.description}
                   </p>
-                  <div className="mt-2 flex flex-wrap gap-2 text-xs text-gray-400">
-                    <span className="rounded-full border border-gray-700/50 bg-gray-900/50 px-2 py-0.5">
+                  <div className="mt-2 flex flex-wrap gap-2 text-xs text-bastion-text-mid">
+                    <span className="bastion-chip rounded-full border px-2 py-0.5">
                       Avg RPS Profile {selectedAttackType.avgRps}
                     </span>
-                    <span className="rounded-full border border-gray-700/50 bg-gray-900/50 px-2 py-0.5">
+                    <span className="bastion-chip rounded-full border px-2 py-0.5">
                       {t('defense.command.successChance')} {(selectedAttackType.successRate * 100).toFixed(1)}%
                     </span>
                   </div>
@@ -136,7 +136,7 @@ const ControlPanelV2Base = ({
 
               <div>
                 <div className="flex justify-between mb-2">
-                  <label htmlFor="attack-intensity" className="text-sm text-gray-400">{t('defense.command.intensity')}</label>
+                  <label htmlFor="attack-intensity" className="text-sm text-bastion-text-mid">{t('defense.command.intensity')}</label>
                   <span id="attack-intensity-value" className="text-sm text-danger font-bold">
                     {config.attackIntensity}x
                   </span>
@@ -160,7 +160,7 @@ const ControlPanelV2Base = ({
         <div className="h-px bg-gray-700/50" />
 
         <div className="space-y-4">
-          <h3 className="text-sm font-medium text-gray-400 flex items-center gap-2">
+          <h3 className="text-sm font-medium text-bastion-text-mid flex items-center gap-2">
             <Shield size={16} /> {t('defense.command.defenseSection')}
           </h3>
           <p className="text-xs text-bastion-text-mid">{t('defense.command.defenseHelp')}</p>
@@ -171,8 +171,8 @@ const ControlPanelV2Base = ({
                 <div className="flex items-center gap-2">
                   <span className="text-lg">{defense.icon}</span>
                   <div>
-                    <span className="block text-gray-200 text-sm">{defense.name}</span>
-                    <span className="text-xs text-gray-500">{trimmedDescription(defense.description)}</span>
+                    <span className="block text-bastion-text-high text-sm">{defense.name}</span>
+                    <span className="text-xs text-bastion-text-mid">{trimmedDescription(defense.description)}</span>
                   </div>
                 </div>
                 <input

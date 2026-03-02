@@ -486,18 +486,10 @@ function AppV2() {
           </div>
 
           <div className="flex flex-wrap gap-3 items-center bastion-toolbar">
-            {/* Attack Type Badge */}
-            {state.config.isUnderAttack && (
-              <div className="px-4 py-2 rounded-full bastion-chip bastion-chip-danger flex items-center gap-2">
-                <span className="text-lg" aria-hidden="true">{state.attackType.icon}</span>
-                <span className="text-danger text-sm font-medium">{state.attackType.name}</span>
-              </div>
-            )}
-
             {/* Status Indicator */}
             <div
               aria-live="polite"
-              className={`px-4 py-2 rounded-full border flex items-center gap-2 bastion-status-chip ${
+              className={`bastion-header-pill px-4 py-2 rounded-full border flex items-center gap-2 bastion-status-chip ${
                 state.config.isUnderAttack ? 'is-danger' : 'is-secure'
               }`}
             >
@@ -507,33 +499,15 @@ function AppV2() {
               {state.config.isUnderAttack ? t('common.states.underAttack') : t('common.states.secure')}
             </div>
 
-            <div className="px-3 py-1 rounded-full border bastion-metric-pill text-xs text-bastion-text-mid">
+            <div className="bastion-header-pill px-3 py-1 rounded-full border bastion-metric-pill text-xs text-bastion-text-mid">
               {t('dashboard.telemetry.rps')} {formatNumber(latestTelemetry.rps)}
             </div>
-            <div className="px-3 py-1 rounded-full border bastion-metric-pill text-xs text-bastion-text-mid">
+            <div className="bastion-header-pill px-3 py-1 rounded-full border bastion-metric-pill text-xs text-bastion-text-mid">
               {t('dashboard.telemetry.blockedPerSec')} {formatNumber(latestTelemetry.blocked)}
             </div>
 
             <LanguageSwitcher />
             <ThemeToggle />
-
-            <button
-              type="button"
-              onClick={() => handleToggleAttack(true)}
-              className="bastion-primary-btn"
-            >
-              <Play size={15} />
-              {t('common.actions.start')}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleToggleAttack(false)}
-              className="bastion-outline-btn"
-            >
-              <Square size={15} />
-              {t('common.actions.stop')}
-            </button>
 
             <button
               type="button"

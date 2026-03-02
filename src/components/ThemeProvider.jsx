@@ -41,38 +41,6 @@ const THEMES = {
       '--secondary-color': '#0284c7',
     },
   },
-  midnight: {
-    id: 'midnight',
-    name: 'Midnight Blue',
-    icon: '🌌',
-    colors: {
-      '--bg-color': '#0d1117',
-      '--bg-secondary': '#161b22',
-      '--bg-tertiary': '#21262d',
-      '--text-color': '#c9d1d9',
-      '--text-secondary': '#8b949e',
-      '--card-bg': 'rgba(22, 27, 34, 0.8)',
-      '--card-border': '#30363d',
-      '--primary-color': '#58a6ff',
-      '--secondary-color': '#79c0ff',
-    },
-  },
-  hacker: {
-    id: 'hacker',
-    name: 'Hacker',
-    icon: '💻',
-    colors: {
-      '--bg-color': '#0a0a0a',
-      '--bg-secondary': '#0f0f0f',
-      '--bg-tertiary': '#1a1a1a',
-      '--text-color': '#00ff00',
-      '--text-secondary': '#00cc00',
-      '--card-bg': 'rgba(0, 20, 0, 0.8)',
-      '--card-border': '#003300',
-      '--primary-color': '#00ff00',
-      '--secondary-color': '#00cc00',
-    },
-  },
 };
 
 export const ThemeProvider = ({ children }) => {
