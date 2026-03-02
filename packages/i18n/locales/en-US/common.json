@@ -33,6 +33,10 @@
     "secure": "System Secure",
     "noData": "No data available"
   },
+  "i18nStatus": {
+    "missing": "{{languages}} localization pack is not installed yet.",
+    "missingPlural": "{{languages}} localization packs are not installed yet."
+  },
   "labels": {
     "window": "Window",
     "active": "Active",
