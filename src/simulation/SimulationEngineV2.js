@@ -78,7 +78,13 @@ export class SimulationEngineV2 {
     this.tickInterval = 100; // ms
     this.attackStartTime = null;
     this.lastTickRequests = 0;
-    
+
+    // Live mode
+    this.liveMode = false;
+    this.targetUrl = 'http://localhost:10011/login';
+    this.pendingProbes = 0;
+    this.maxConcurrentProbes = 20;
+
     // Alerts
     this.alerts = [];
     this.maxAlerts = 50;
@@ -176,7 +182,8 @@ export class SimulationEngineV2 {
    */
   toggleDefense(defenseId, enabled) {
     this.defenseManager.toggleDefense(defenseId, enabled);
-    
+    this.syncDefensesToProxy();
+
     const defense = DEFENSE_TYPES[defenseId.toUpperCase()];
     if (defense) {
       this.addAlert(
@@ -195,40 +202,150 @@ export class SimulationEngineV2 {
   }
 
   /**
+   * Enable/disable live HTTP mode
+   */
+  setLiveMode(enabled) {
+    this.liveMode = enabled;
+    if (enabled) {
+      this.syncDefensesToProxy();
+      this.addAlert('info', 'Live Mode', 'Switched to real HTTP requests');
+    } else {
+      this.addAlert('info', 'Simulation Mode', 'Switched back to simulated traffic');
+    }
+  }
+
+  /**
+   * Set the target URL for live probes
+   */
+  setTargetUrl(url) {
+    this.targetUrl = url;
+  }
+
+  /**
+   * Sync current defense state to the proxy server
+   */
+  syncDefensesToProxy() {
+    if (!this.liveMode) return;
+    const payload = {};
+    const defs = this.defenseManager.getDefenses();
+    for (const key of Object.keys(defs)) {
+      const d = defs[key];
+      payload[d.id] = { enabled: d.enabled, config: { ...d.config } };
+    }
+    fetch('/api/defenses', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    }).catch(() => {/* proxy may be down */});
+  }
+
+  /**
+   * Send a single live probe to the proxy
+   */
+  sendLiveProbe(request) {
+    if (this.pendingProbes >= this.maxConcurrentProbes) return;
+    this.pendingProbes++;
+    const start = Date.now();
+
+    fetch('/api/probe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        targetUrl: this.targetUrl,
+        username: request.username,
+        password: request.password,
+        ip: request.ip,
+        origin: request.origin,
+      }),
+    })
+      .then(res => res.json())
+      .then(data => {
+        const responseTime = data.responseTime || (Date.now() - start);
+        this.stats.totalRequests++;
+
+        if (data.blocked) {
+          this.stats.blockedRequests++;
+        } else if (data.statusCode === 200) {
+          this.stats.successfulLogins++;
+          this.stats.successfulRequests++;
+        } else if (data.statusCode === 401) {
+          this.stats.failedAuth++;
+        }
+
+        this.logRequest(
+          { ...request, timestamp: Date.now() },
+          data.statusCode,
+          data.message || (data.blocked ? `Blocked by ${data.defense}` : `${data.statusCode}`),
+          data.defenseResponses || [],
+        );
+      })
+      .catch(() => {
+        this.stats.totalRequests++;
+        this.logRequest(
+          { ...request, timestamp: Date.now() },
+          502,
+          'Proxy unreachable',
+          [],
+        );
+      })
+      .finally(() => {
+        this.pendingProbes--;
+      });
+  }
+
+  /**
    * Main simulation tick
    */
   tick() {
+    // --- LIVE MODE: send real HTTP probes ---
+    if (this.liveMode && this.config.isUnderAttack) {
+      const attackRequests = this.attackGenerator.generateRequest(this.config.attackIntensity);
+      attackRequests.forEach(req => this.sendLiveProbe(req));
+
+      this.stats.rps = Math.round(attackRequests.length * (1000 / this.tickInterval));
+      if (this.stats.rps > this.stats.peakRps) {
+        this.stats.peakRps = this.stats.rps;
+      }
+      if (this.attackStartTime) {
+        this.stats.attackDuration = Date.now() - this.attackStartTime;
+      }
+      this.trimAttackTelemetry(Date.now());
+      this.notify();
+      return;
+    }
+
+    // --- SIMULATION MODE (original behaviour) ---
     const requests = [];
-    
+
     // 1. Generate normal traffic
     if (Math.random() < this.config.normalTrafficRate) {
       requests.push(this.generateNormalRequest());
     }
-    
+
     // 2. Generate attack traffic
     if (this.config.isUnderAttack) {
       const attackRequests = this.attackGenerator.generateRequest(this.config.attackIntensity);
       requests.push(...attackRequests);
     }
-    
+
     // 3. Process all requests
     requests.forEach(req => this.processRequest(req));
-    
+
     // 4. Update stats
     this.lastTickRequests = requests.length;
     this.stats.rps = Math.round(requests.length * (1000 / this.tickInterval));
-    
+
     if (this.stats.rps > this.stats.peakRps) {
       this.stats.peakRps = this.stats.rps;
     }
-    
+
     // Update attack duration
     if (this.config.isUnderAttack && this.attackStartTime) {
       this.stats.attackDuration = Date.now() - this.attackStartTime;
     }
 
     this.trimAttackTelemetry(Date.now());
-    
+
     // 5. Notify subscribers
     this.notify();
   }
@@ -538,9 +655,15 @@ export class SimulationEngineV2 {
     };
     this.config.isUnderAttack = false;
     this.attackStartTime = null;
+    this.pendingProbes = 0;
     this.attackGenerator.reset();
     this.defenseManager.reset();
-    
+
+    // Reset proxy tracking state too
+    if (this.liveMode) {
+      fetch('/api/reset', { method: 'POST' }).catch(() => {});
+    }
+
     this.addAlert('info', 'Simulation Reset', 'All statistics and state have been cleared');
   }
 }

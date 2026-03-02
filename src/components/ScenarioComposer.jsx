@@ -1,5 +1,6 @@
-import { Play, Save, Square } from 'lucide-react';
+import { Activity, Play, Save, Square, Wifi, WifiOff } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useCallback, useEffect, useState } from 'react';
 import { useI18n } from '../i18n/I18nProvider';
 
 const TARGET_SURFACES = ['login', 'api', 'mixed'];
@@ -20,6 +21,10 @@ export const ScenarioComposer = ({
   onStop,
   onSelectScenario,
   error,
+  liveMode = false,
+  targetUrl = 'http://localhost:10011/login',
+  onLiveModeChange,
+  onTargetUrlChange,
 }) => {
   const { t, formatNumber } = useI18n();
   const selectedAttackType = attackTypes.find((item) => item.id === draft.attackType) || attackTypes[0];
@@ -32,6 +37,20 @@ export const ScenarioComposer = ({
         : riskScore >= 30
           ? t('scenario.risk.medium')
           : t('scenario.risk.low');
+
+  // Connection health check for live mode
+  const [proxyReachable, setProxyReachable] = useState(null);
+  const checkProxy = useCallback(() => {
+    fetch('/api/health')
+      .then(r => r.ok ? setProxyReachable(true) : setProxyReachable(false))
+      .catch(() => setProxyReachable(false));
+  }, []);
+  useEffect(() => {
+    if (!liveMode) { setProxyReachable(null); return; }
+    checkProxy();
+    const id = setInterval(checkProxy, 5000);
+    return () => clearInterval(id);
+  }, [liveMode, checkProxy]);
 
   return (
     <section className="grid grid-cols-1 xl:grid-cols-5 gap-6">
@@ -112,6 +131,60 @@ export const ScenarioComposer = ({
               className="w-full"
             />
           </label>
+        </div>
+
+        {/* Live Mode Controls */}
+        <div className="mt-5 rounded-xl border border-bastion-line bg-bastion-panel p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Activity size={16} className="text-bastion-accent-copper" />
+              <span className="text-sm bastion-heading">Live HTTP Mode</span>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={liveMode}
+                onChange={(e) => onLiveModeChange?.(e.target.checked)}
+                className="sr-only peer"
+              />
+              <div className="w-9 h-5 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500" />
+            </label>
+          </div>
+
+          {liveMode && (
+            <div className="space-y-3">
+              <label className="bastion-field">
+                <span>Target URL</span>
+                <input
+                  value={targetUrl}
+                  onChange={(e) => onTargetUrlChange?.(e.target.value)}
+                  className="bastion-input"
+                  placeholder="http://localhost:10011/login"
+                />
+              </label>
+              <div className="flex items-center gap-2 text-xs">
+                {proxyReachable === true && (
+                  <>
+                    <Wifi size={14} className="text-emerald-400" />
+                    <span className="text-emerald-400">Proxy connected &middot; Target reachable</span>
+                  </>
+                )}
+                {proxyReachable === false && (
+                  <>
+                    <WifiOff size={14} className="text-red-400" />
+                    <span className="text-red-400">Proxy unreachable &middot; Start servers first</span>
+                  </>
+                )}
+                {proxyReachable === null && (
+                  <span className="text-bastion-text-mid">Enable live mode to check connection</span>
+                )}
+              </div>
+              <p className="text-xs text-bastion-text-mid">
+                Real HTTP requests will be sent through the defense proxy to the target login server.
+                Run <code className="text-bastion-accent-teal">node server/proxy.js</code> and <code className="text-bastion-accent-teal">node server/target.js</code> first.
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="mt-5 flex flex-wrap gap-3">

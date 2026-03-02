@@ -5,6 +5,14 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [react()],
   base: './', // Required for Electron file:// protocol
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:10010',
+        changeOrigin: true,
+      },
+    },
+  },
   build: {
     rollupOptions: {
       output: {

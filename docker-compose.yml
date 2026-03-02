@@ -4,4 +4,26 @@ services:
     container_name: atajan-brute-force
     ports:
       - "4089:4089"
+    depends_on:
+      - proxy
+    restart: unless-stopped
+
+  proxy:
+    build: ./server
+    container_name: bastion-proxy
+    command: node proxy.js
+    environment:
+      - TARGET_URL=http://target:10011/login
+    expose:
+      - "10010"
+    depends_on:
+      - target
+    restart: unless-stopped
+
+  target:
+    build: ./server
+    container_name: bastion-target
+    command: node target.js
+    expose:
+      - "10011"
     restart: unless-stopped

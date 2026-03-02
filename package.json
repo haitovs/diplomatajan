@@ -12,9 +12,13 @@
   "scripts": {
     "dev": "vite",
     "dev:web": "vite",
+    "dev:live": "concurrently -n web,proxy,target -c cyan,green,yellow \"vite\" \"node server/proxy.js\" \"node server/target.js\"",
     "dev:api": "npm run -w apps/api dev",
     "dev:worker": "npm run -w workers/sim-runner dev",
     "dev:all": "concurrently \"npm run dev:web\" \"npm run dev:api\" \"npm run dev:worker\"",
+    "up": "docker compose up --build -d",
+    "down": "docker compose down",
+    "logs": "docker compose logs -f",
     "build": "vite build",
     "build:api": "npm run -w apps/api build",
     "build:worker": "npm run -w workers/sim-runner build",

@@ -206,6 +206,8 @@ function AppV2() {
   });
   const [selectedScenarioId, setSelectedScenarioId] = useState(null);
   const [scenarioError, setScenarioError] = useState('');
+  const [liveMode, setLiveMode] = useState(false);
+  const [targetUrl, setTargetUrl] = useState('http://localhost:10011/login');
   const [baselineSnapshot, setBaselineSnapshot] = useState(null);
   const [hardenedSnapshot, setHardenedSnapshot] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
@@ -316,11 +318,21 @@ function AppV2() {
     });
     engine.toggleDefense(id, val);
   }, []);
-  const handleReset = useCallback(() => { 
-    engine.reset(); 
+  const handleReset = useCallback(() => {
+    engine.reset();
     metricsCollector.reset();
     lastChartSampleRef.current = 0;
     setChartData([]);
+  }, []);
+
+  const handleLiveModeChange = useCallback((enabled) => {
+    setLiveMode(enabled);
+    engine.setLiveMode(enabled);
+  }, []);
+
+  const handleTargetUrlChange = useCallback((url) => {
+    setTargetUrl(url);
+    engine.setTargetUrl(url);
   }, []);
 
   const handleScenarioDraftChange = useCallback((patch) => {
@@ -498,6 +510,13 @@ function AppV2() {
               }`} />
               {state.config.isUnderAttack ? t('common.states.underAttack') : t('common.states.secure')}
             </div>
+
+            {liveMode && (
+              <div className="bastion-header-pill px-3 py-1 rounded-full border border-emerald-500/50 bg-emerald-500/10 text-xs text-emerald-400 flex items-center gap-1.5">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                LIVE
+              </div>
+            )}
 
             <div className="bastion-header-pill px-3 py-1 rounded-full border bastion-metric-pill text-xs text-bastion-text-mid">
               {t('dashboard.telemetry.rps')} {formatNumber(latestTelemetry.rps)}
@@ -716,6 +735,10 @@ function AppV2() {
               onStop={() => handleToggleAttack(false)}
               onSelectScenario={handleSelectScenario}
               error={scenarioError}
+              liveMode={liveMode}
+              targetUrl={targetUrl}
+              onLiveModeChange={handleLiveModeChange}
+              onTargetUrlChange={handleTargetUrlChange}
             />
           )}
 

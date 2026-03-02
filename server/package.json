@@ -1,0 +1,15 @@
+{
+  "name": "bastion-twin-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "target": "node target.js",
+    "proxy": "node proxy.js",
+    "start": "node proxy.js & node target.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "cors": "^2.8.5"
+  }
+}
