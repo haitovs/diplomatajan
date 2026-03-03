@@ -4,38 +4,4 @@ services:
     container_name: atajan-brute-force
     ports:
       - "4089:4089"
-    depends_on:
-      proxy:
-        condition: service_healthy
-    restart: unless-stopped
-
-  proxy:
-    build: ./server
-    container_name: bastion-proxy
-    command: node proxy.js
-    environment:
-      - TARGET_URL=http://target:10011/login
-    expose:
-      - "10010"
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:10010/api/health"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
-    depends_on:
-      target:
-        condition: service_healthy
-    restart: unless-stopped
-
-  target:
-    build: ./server
-    container_name: bastion-target
-    command: node target.js
-    expose:
-      - "10011"
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:10011/health"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
     restart: unless-stopped
