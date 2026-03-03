@@ -20,7 +20,8 @@ RUN apk add --no-cache nodejs
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Server code + deps
+# Server code + deps (package.json needed for "type": "module")
+COPY server/package.json /app/server/
 COPY server/*.js /app/server/
 COPY --from=server-deps /app/server/node_modules /app/server/node_modules
 
